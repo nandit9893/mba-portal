@@ -1,38 +1,11 @@
-const Admin = require('../models/Admin');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-require('dotenv').config();
+import Admin from '../models/Admin.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
 
-// Register a new Admin
-exports.register = async (req, res) => {
-    const { username, password, mobileNumber, position, salary } = req.body;
+dotenv.config();
 
-    try {
-        // Check if username exists
-        let adminExists = await Admin.findOne({ username });
-        if (adminExists) {
-            return res.status(400).json({ message: 'Admin already exists' });
-        }
-
-        // Create new admin
-        const admin = new Admin({
-            username,
-            password,
-            mobileNumber,
-            position,
-            salary
-        });
-
-        await admin.save();
-
-        res.status(201).json({ message: 'Admin registered successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
-    }
-};
-
-// Login Admin (Already provided)
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
     const { username, password } = req.body;
     try {
         const admin = await Admin.findOne({ username });
@@ -53,6 +26,24 @@ exports.login = async (req, res) => {
         } else {
             res.status(401).json({ message: 'Invalid Credentials' });
         }
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+export const register = async (req, res) => {
+    const { username, password, mobileNumber, position, salary } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newAdmin = new Admin({
+            username,
+            password: hashedPassword,
+            mobileNumber,
+            position,
+            salary
+        });
+        await newAdmin.save();
+        res.status(201).json({ message: 'Admin registered successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
     }

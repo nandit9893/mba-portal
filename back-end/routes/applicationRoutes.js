@@ -1,14 +1,11 @@
-import express from 'express';
-import { applyForJob, getApplications } from '../controllers/applicationController.js';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
-import { checkAlreadyApplied } from '../middlewares/applicationMiddleware.js';
+// routes/applicationRoutes.js
+import express from "express";
+import { applyJob } from "../controllers/applicationController.js";
+import { authenticateUser } from "../middlewares/applicationMiddleware.js";
+
 
 const router = express.Router();
 
-// Route for candidates to apply for a job
-router.post('/apply-job/:jobId', authMiddleware, checkAlreadyApplied, applyForJob);
-
-// Route for employers to view applicants for a particular job
-router.get('/applications/:jobId', authMiddleware, getApplications);
+router.post("/apply", authenticateUser, applyJob);
 
 export default router;

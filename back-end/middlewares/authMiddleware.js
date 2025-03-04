@@ -98,16 +98,4 @@ export const authMiddleware = async (req, res, next) => {
       res.status(401).json({ msg: 'Token is not valid' });
     }
 };
-
-<<<<<<< HEAD
 export default authMiddleware;
-=======
-export default authMiddleware;
-
-
-
-
-
-
-
->>>>>>> 3907a04e3d9b602bbb87b7defc49d693bb290a63

@@ -10,10 +10,6 @@ const router = express.Router();
 
 // UPDATE USER || PUT
 router.put("/update-user", userAuth, updateUserController);
-<<<<<<< HEAD
-=======
 
 export default router;
->>>>>>> 3907a04e3d9b602bbb87b7defc49d693bb290a63
 
-export default router;

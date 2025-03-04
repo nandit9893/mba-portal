@@ -10,8 +10,6 @@ export const updateUserController = async (req, res, next) => {
   user.lastName = lastName;
   user.email = email;
   user.location = location;
-<<<<<<< HEAD
-=======
 
   await user.save();
   const token = user.createJWT();
@@ -20,12 +18,4 @@ export const updateUserController = async (req, res, next) => {
     token,
   });
 };
->>>>>>> 3907a04e3d9b602bbb87b7defc49d693bb290a63
 
-  await user.save();
-  const token = user.createJWT();
-  res.status(200).json({
-    user,
-    token,
-  });
-};

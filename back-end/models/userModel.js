@@ -53,12 +53,5 @@ userSchema.methods.createJWT = function () {
     expiresIn: "1d",
   });
 };
-<<<<<<< HEAD
+
 export default mongoose.model("User", userSchema);
-=======
-export default mongoose.model("User", userSchema);
-
-
-
-
->>>>>>> 3907a04e3d9b602bbb87b7defc49d693bb290a63

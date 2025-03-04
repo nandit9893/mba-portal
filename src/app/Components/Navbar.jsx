@@ -1,10 +1,11 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiShoppingBag } from "react-icons/bi";
 import { HiOutlineMenu } from "react-icons/hi";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaMoon, FaSun, FaUser } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [menu, setMenu] = useState("home");
@@ -12,6 +13,43 @@ const Navbar = () => {
   const [openMenus, setOpenMenus] = useState(false);
   const [slide, setSlide] = useState(null);
   const [viewProfile, setViewProfile] = useState(false);
+  const [tokenFromLocalStorage, setTokenFromLocalStorage] = useState(false);
+
+  useEffect(() => {
+    const fetchToken = () => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        setTokenFromLocalStorage(true);
+      } else {
+        setTokenFromLocalStorage(false);
+      }
+    };
+    fetchToken();
+  }, []);
+
+  const logOutUser = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      toast.error("You are not logged in!");
+      return;
+    }
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/auth/logout`;
+    try {
+      const response = await axios.post(url, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (response.status === 200) {
+        localStorage.removeItem("authToken");
+        toast.success(response.data.message || "Logged out successfully");
+        router.push("/Login");
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Logout failed!";
+      toast.error(errorMessage);
+    }
+  };
 
   return (
     <div className="flex justify-between items-center px-3 py-5 sm:px-2 sm:py-4 lg:p-6 lg:px-20 bg-black overflow-x-hidden">
@@ -32,32 +70,38 @@ const Navbar = () => {
           toggle === "sun" ? <FaSun onClick={()=>setToggle("moon")} className="text-white text-xl drop-shadow-[0_0_30px_rgba(255,255,255,1)]" /> : <FaMoon onClick={()=>setToggle("sun")} className="text-white text-xl drop-shadow-[0_0_30px_rgba(255,255,255,1)]" />
         }
       </div>
-      <div className="hidden sm:flex items-center gap-7">
-        <Link href="/Login" className="text-white text-lg font-semibold">Login</Link>
-        <Link href="/Register" className="text-white text-lg font-semibold px-5 py-2 bg-[#309689] rounded-2xl">Register</Link>
-      </div>
-      {/* <div onClick={()=>setViewProfile((prev) => !prev)} className="bg-slate-500 hover:bg-slate-600 cursor-pointer transition-colors duration-300 rounded-full p-2">
-        <FaUser className="text-white text-2xl" />
-      </div>
       {
-        viewProfile ? 
+        tokenFromLocalStorage ? 
         (
-          <motion.div 
-            initial={{ x: 6, opacity: 0 }}
-            animate={{ x: viewProfile ? 0 : 6, opacity: viewProfile ? 1 : 0 }}
-            transition={{ type: "spring", stiffness: 100 }}
-            className="flex flex-col gap-4 px-2 py-3 bg-gradient-to-tr from-slate-950 to-slate-600 rounded-2xl z-50 absolute right-4 w-56 top-16">
-            <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(1)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 1 ? "translate-x-1" : ""}`}>nanditsharma063@gmail.com</Link>
-            <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(2)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 2 ? "translate-x-1" : ""}`}>MY APPLICATION</Link>
-            <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(3)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 3 ? "translate-x-1" : ""}`}>EDIT RESUME</Link>
-            <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(4)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 4 ? "translate-x-1" : ""}`}>PAYMENT</Link>
-            <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(5)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 5 ? "translate-x-1" : ""}`}>HELP CENTER</Link>
-            <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(6)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 6 ? "translate-x-1" : ""}`}>LOGOUT</Link>
-          </motion.div>
+          <div>
+            <div onClick={()=>setViewProfile((prev) => !prev)} className="bg-slate-500 hover:bg-slate-600 cursor-pointer transition-colors duration-300 rounded-full p-2">
+              <FaUser className="text-white text-2xl" />
+            </div>
+            {
+              viewProfile && 
+              (
+                <motion.div 
+                  initial={{ x: 6, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 100 }}
+                  className="flex flex-col gap-4 px-2 py-3 bg-gradient-to-tr from-slate-950 to-slate-600 rounded-2xl z-50 absolute right-4 w-56 top-16">
+                  <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(1)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 1 ? "translate-x-1" : ""}`}>nanditsharma063@gmail.com</Link>
+                  <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(2)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 2 ? "translate-x-1" : ""}`}>MY APPLICATION</Link>
+                  <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(3)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 3 ? "translate-x-1" : ""}`}>EDIT RESUME</Link>
+                  <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(4)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 4 ? "translate-x-1" : ""}`}>PAYMENT</Link>
+                  <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(5)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 5 ? "translate-x-1" : ""}`}>HELP CENTER</Link>
+                  <Link onClick={logOutUser} href="/" onMouseEnter={() => setSlide(6)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 6 ? "translate-x-1" : ""}`}>LOGOUT</Link>
+                </motion.div>
+              )
+            }
+          </div>
         )
         :
-        null
-      } */}
+        <div className="hidden sm:flex items-center gap-7">
+          <Link href="/Login" className="text-white text-lg font-semibold">Login</Link>
+          <Link href="/Register" className="text-white text-lg font-semibold px-5 py-2 bg-[#309689] rounded-2xl">Register</Link>
+        </div>
+      }
       <motion.div 
         initial={{ y: 150, opacity: 0 }}
         animate={{ y: openMenus ? 0 : 50, opacity: openMenus ? 1 : 0 }}

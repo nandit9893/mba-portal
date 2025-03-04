@@ -8,5 +8,5 @@ const router = express.Router();
 //routes
 router.post("/test-post", userAuth, testPostController);
 
-//export
+
 export default router;

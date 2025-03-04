@@ -1,19 +1,17 @@
-import React from "react";
-
 const Hero = () => {
   return (
     <div
-      className="bg-black text-white text-center py-16"
+      className="relative w-full h-[400px] flex items-center justify-center text-white text-center"
       style={{
         backgroundImage: "url('/background.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        width: "100%",
-        height: "400px",
-        opacity: "75%",
       }}
     >
-      <h1 className="text-4xl font-bold">Jobs</h1>
+      <div className="absolute inset-0 bg-black opacity-75"></div>
+      <h1 className="relative text-4xl md:text-5xl lg:text-6xl font-bold z-10">
+        Jobs
+      </h1>
     </div>
   );
 };

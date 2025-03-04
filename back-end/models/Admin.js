@@ -2,10 +2,11 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 const adminSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    email: { type: String, unique: true, required: true },
+    username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, default: "admin" },
+    mobileNumber: { type: String, required: true },
+    position: { type: String, required: true },
+    salary: { type: Number, required: true }
 }, { timestamps: true });
 
 // Password Hashing Before Saving

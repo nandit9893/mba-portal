@@ -1,70 +1,70 @@
 import mongoose from "mongoose";
+import validator from "validator";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-
-// User Schema & Model
+import JWT from "jsonwebtoken";
+//schema
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    email: { type: String, unique: true, required: true },
-    password: { type: String, required: true },
-    profilePic: { type: String, default: "" },
-    location: { type: String, default: true},
-    education: [
-      {
-        degree: String,
-        institution: String,
-        yearOfCompletion: String,
-      },
-    ],
+    name: {
+      type: String,
+      required: [true, "Name Is Require"],
+    },
+    lastName: {
+      type: String,
+    },
+    email: {
+      type: String,
+      required: [true, " Email is Require"],
+      unique: true,
+      validate: validator.isEmail,
+    },
+    password: {
+      type: String,
+      required: [true, "password is require"],
+      minlength: [6, "Password length should be greater than 6 character"],
+      select: true,
+    },
+    location: {
+      type: String,
+      default: "India",
+    },
+    phone: String,
+    dateOfBirth: String,
+    gender: String,
+    profilePicture: String, // Profile Picture URL
+    education: {
+        highestDegree: String,
+        university: String,
+        passingYear: String
+    },
     skills: [String],
-    experience: [
-      {
-        company: String,//
-        role: String,
-        duration: String,
-      },
-    ],
+    experience: String,
+    resume: String, // Resume File URL
+    passwordResetToken: String, // Store the reset token here
+  passwordResetExpires: Date, // Store token expiration time
   },
   { timestamps: true }
 );
-
-// Hash Password Before Saving
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+// Hash the password before saving to the database
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-// Compare Password
-userSchema.methods.matchPassword = async function (enteredPassword) {
+// Compare hashed password
+userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
 
-// Authentication Middleware
-export const protectUser = async (req, res, next) => {
-  let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-    try {
-      token = req.headers.authorization.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select("-password");
-      next();
-    } catch (error) {
-      res.status(401).json({ error: "Not authorized, token failed" });
-    }
-  }
-  if (!token) {
-    res.status(401).json({ error: "Not authorized, no token" });
-  }
+//JSON WEBTOKEN
+userSchema.methods.createJWT = function () {
+  return JWT.sign({ userId: this._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 };
-
-// Create User Model
-const User = mongoose.model("User", userSchema);
-
-export default User;
+export default mongoose.model("User", userSchema);
 
 
 

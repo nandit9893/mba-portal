@@ -6,10 +6,10 @@ import Image from "next/image";
 
 const Nav = () => {
   return (
-    <div className="bg-teal-600 p-4 flex justify-between items-center rounded-xl shadow-md text-white">
+    <div className="bg-teal-600 p-4 w-full flex flex-wrap justify-between items-center rounded-xl shadow-md text-white">
       {/* Left Section */}
-      <div>
-        <p className="text-sm font-medium">Welcome Divya Sain👋</p>
+      <div className="mb-2 sm:mb-0">
+        <p className="text-sm font-medium">Welcome, Divya Sain 👋</p>
         <p className="text-xs">Here’s what happening with you today.</p>
       </div>
 
@@ -18,14 +18,15 @@ const Nav = () => {
         <FaRegBookmark className="text-lg cursor-pointer" />
         <BsToggleOn className="text-2xl cursor-pointer" />
         <FaBell className="text-lg cursor-pointer" />
-        
+
         {/* Profile Image */}
-        <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white">
-          <img
-            src="logo.jpg" // Change this to the actual image path
+        <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white">
+          <Image
+            src="/logo.jpg" // Ensure this is the correct path
             alt="Profile"
-            width={32}
-            height={32}
+            width={40}
+            height={40}
+            className="object-cover"
           />
         </div>
       </div>
@@ -33,4 +34,4 @@ const Nav = () => {
   );
 };
 
-export default Nav ;
+export default Nav;

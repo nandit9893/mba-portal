@@ -27,22 +27,11 @@ const userSchema = new mongoose.Schema(
     location: {
       type: String,
       default: "India",
+      phone: String,
     },
-    phone: String,
-    dateOfBirth: String,
-    gender: String,
-    profilePicture: String, // Profile Picture URL
-    education: {
-        highestDegree: String,
-        university: String,
-        passingYear: String
-    },
-    skills: [String],
-    experience: String,
-    resume: String, // Resume File URL
-    passwordResetToken: String, // Store the reset token here
-  passwordResetExpires: Date, // Store token expiration time
   },
+    
+
   { timestamps: true }
 );
 // Hash the password before saving to the database

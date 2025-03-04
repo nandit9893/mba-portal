@@ -23,7 +23,7 @@ const Navbar = () => {
       <div className="hidden sm:flex gap-5 items-center">
         <Link href="/" className={`${menu === "home" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("home")}>Home</Link>
         <Link href="/Jobs" className={`${menu === "job" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("job")}>Jobs</Link>
-        <Link href="/JobDetails" className={`${menu === "job-details" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("job-details")}>Job Details</Link>
+        <Link  href={`/JobDetails/${1}`}  className={`${menu === "job-details" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("job-details")}>Job Details</Link>
         <Link href="/AboutUs" className={`${menu === "about" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("about")}>About Us</Link>
         <p onClick={() => setMenu("contact")} className={`${menu === "contact" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`}>Contact Us</p>
       </div>

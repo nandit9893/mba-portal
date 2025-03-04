@@ -1,8 +1,173 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+import {
+  FaHotel,
+  FaClock,
+  FaMoneyBillWave,
+  FaLocationArrow,
+} from "react-icons/fa";
 import Image from "next/image";
 import Head from "next/head";
+import { useParams } from "next/navigation";
 
 const JobDetailsPage = () => {
+  const { id } = useParams();
+<<<<<<< HEAD
+  const [specificJob, setSpecificJob] = useState(null);console.log(specificJob)
+=======
+  const [specificJob, setSpecificJob] = useState(null);
+  console.log(specificJob);
+>>>>>>> 6751adfd71622f9dd78a2307a46530eab892f754
+  const jobsArray = [
+    {
+      _id: 1,
+      job_title: "HR Manager",
+      company_name: "GenXhire and Co",
+      posted_time: "10",
+      assets: [
+        {
+          _id: 11,
+          icon: <FaHotel className="text-xl text-[#309689]" />,
+          title: "Hotel & Tourism",
+        },
+        {
+          _id: 12,
+          icon: <FaClock className="text-xl text-[#309689]" />,
+          title: "Full Time",
+        },
+        {
+          _id: 13,
+          icon: <FaMoneyBillWave className="text-xl text-[#309689]" />,
+          title: "$40000 - $42000",
+        },
+        {
+          _id: 14,
+          icon: <FaLocationArrow className="text-xl text-[#309689]" />,
+          title: "New-York, USA",
+        },
+      ],
+    },
+    {
+      _id: 2,
+      job_title: "HR Operations",
+      company_name: "Polymed Solutions",
+      posted_time: "20",
+      assets: [
+        {
+          _id: 11,
+          icon: <FaHotel className="texl text-[#309689]" />,
+          title: "Media",
+        },
+        {
+          _id: 12,
+          icon: <FaClock className="texl text-[#309689]" />,
+          title: "Part Time",
+        },
+        {
+          _id: 13,
+          icon: <FaMoneyBillWave className="texl text-[#309689]" />,
+          title: "$28000 - $32000",
+        },
+        {
+          _id: 14,
+          icon: <FaLocationArrow className="texl text-[#309689]" />,
+          title: "Los-Angeles, USA",
+        },
+      ],
+    },
+    {
+      _id: 3,
+      job_title: "Senior Human Resources Executive",
+      company_name: "Mraz, Quiley and Feest Inc.",
+      posted_time: "15",
+      assets: [
+        {
+          _id: 11,
+          icon: <FaHotel className="texxl text-[#309689]" />,
+          title: "Construction",
+        },
+        {
+          _id: 12,
+          icon: <FaClock className="texxl text-[#309689]" />,
+          title: "Full Time",
+        },
+        {
+          _id: 13,
+          icon: <FaMoneyBillWave className="texxl text-[#309689]" />,
+          title: "$48000 - $52000",
+        },
+        {
+          _id: 14,
+          icon: <FaLocationArrow className="texxl text-[#309689]" />,
+          title: "Texas, USA",
+        },
+      ],
+    },
+    {
+      _id: 4,
+      job_title: "Sr. Executive HR ops & Payroll",
+      company_name: "VonRueden - Weber Co.",
+      posted_time: "30",
+      assets: [
+        {
+          _id: 11,
+          icon: <FaHotel className="textxl text-[#309689]" />,
+          title: "Hotel & Tourism",
+        },
+        {
+          _id: 12,
+          icon: <FaClock className="textxl text-[#309689]" />,
+          title: "Full Time",
+        },
+        {
+          _id: 13,
+          icon: <FaMoneyBillWave className="textxl text-[#309689]" />,
+          title: "$42000 - $48000",
+        },
+        {
+          _id: 14,
+          icon: <FaLocationArrow className="textxl text-[#309689]" />,
+          title: "Florida, USA",
+        },
+      ],
+    },
+    {
+      _id: 5,
+      job_title: "Retail Sales Executive/Senior Sales Executive",
+      company_name: "Flatley Inc.",
+      posted_time: "5",
+      assets: [
+        {
+          _id: 11,
+          icon: <FaHotel className="text-xl text-[#309689]" />,
+          title: "Hotel & Tourism",
+        },
+        {
+          _id: 12,
+          icon: <FaClock className="text-xl text-[#309689]" />,
+          title: "Full Time",
+        },
+        {
+          _id: 13,
+          icon: <FaMoneyBillWave className="text-xl text-[#309689]" />,
+          title: "$40000 - $42000",
+        },
+        {
+          _id: 14,
+          icon: <FaLocationArrow className="text-xl text-[#309689]" />,
+          title: "New-York, USA",
+        },
+      ],
+    },
+  ];
+
+  useEffect(() => {
+    if (id) {
+      const job = jobsArray.find((item) => item._id === Number(id));
+      setSpecificJob(job);
+    }
+  }, [id]);
+
   return (
     <div>
       <div className="bg-gray-100 min-h-screen">
@@ -30,9 +195,9 @@ const JobDetailsPage = () => {
                   />
                   <div>
                     <h2 className="text-2xl font-bold">
-                      Senior Human Resources Executive
+                      {specificJob?.job_title}
                     </h2>
-                    <p className="text-gray-600">Laffler and Sons</p>
+                    <p className="text-gray-600">{specificJob?.company_name}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -124,13 +289,19 @@ const JobDetailsPage = () => {
                 </div>
                 <div className="flex items-center mb-6">
                   <span className="mr-2">Share Job:</span>
-                  <a href="#" className="text-gray-600 mr-2">
+                  <a
+                    href="#"
+                    className="text-gray-600 mr-2">
                     <i className="fab fa-facebook"></i>
                   </a>
-                  <a href="#" className="text-gray-600 mr-2">
+                  <a
+                    href="#"
+                    className="text-gray-600 mr-2">
                     <i className="fab fa-twitter"></i>
                   </a>
-                  <a href="#" className="text-gray-600">
+                  <a
+                    href="#"
+                    className="text-gray-600">
                     <i className="fab fa-linkedin"></i>
                   </a>
                 </div>
@@ -159,12 +330,12 @@ const JobDetailsPage = () => {
                       <strong>Location:</strong> New York, USA
                     </li>
                   </ul>
-                  <iframe
+                  {/* <iframe
                     className="map"
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62239.35697276339!2d77.61550395!3d12.912139999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae151c9d05f3c7%3A0x7b69aa7e2c0418cd!2sHSR%20Layout%2C%20Bengaluru%2C%20Karnataka%2C%20India!5e0!3m2!1sen!2sin!4v1706301453151!5m2!1sen!2sin"
                     allowfullscreen
                     loading="lazy"
-                  ></iframe>
+                  ></iframe> */}
                 </div>
                 <div className="bg-gray-100 p-4 rounded-lg">
                   <h3 className="text-xl font-bold mb-4">Contact Us</h3>
@@ -186,12 +357,10 @@ const JobDetailsPage = () => {
                     />
                     <textarea
                       placeholder="Your Message"
-                      className="w-full mb-2 p-2 border rounded-md"
-                    ></textarea>
+                      className="w-full mb-2 p-2 border rounded-md"></textarea>
                     <button
                       type="submit"
-                      className="bg-teal-700 text-white px-4 py-2 rounded-md w-full"
-                    >
+                      className="bg-teal-700 text-white px-4 py-2 rounded-md w-full">
                       Send Message
                     </button>
                   </form>
@@ -214,11 +383,16 @@ const JobDetailsPage = () => {
                   className="w-12 h-12 rounded-full mr-4"
                 />
                 <div>
-                  <h3 className="text-xl font-bold">Operations Coordinator</h3>
-                  <p className="text-gray-600">Green Group</p>
+                  <h3 className="text-xl font-bold">
+                    {specificJob?.job_title}
+                  </h3>
+                  <p className="text-gray-600">{specificJob?.company_name}</p>
                 </div>
               </div>
-              <p className="text-gray-600">23 mins ago</p>
+              <p className="text-gray-600">
+                {specificJob?.posted_time}
+                {"mins ago"}
+              </p>
             </div>
             <div className="bg-white shadow-md rounded-lg p-6 mb-4">
               <div className="flex items-center mb-4">
@@ -231,12 +405,15 @@ const JobDetailsPage = () => {
                 />
                 <div>
                   <h3 className="text-xl font-bold">
-                    District Intranet Director
+                    {specificJob?.job_title}
                   </h3>
-                  <p className="text-gray-600">Vandervort - Walter Co</p>
+                  <p className="text-gray-600">{specificJob?.company_name} </p>
                 </div>
               </div>
-              <p className="text-gray-600">23 mins ago</p>
+              <p className="text-gray-600">
+                {specificJob?.posted_time}
+                {"mins ago"}
+              </p>
             </div>
             <div className="bg-white shadow-md rounded-lg p-6">
               <div className="flex items-center mb-4">
@@ -249,14 +426,16 @@ const JobDetailsPage = () => {
                 />
                 <div>
                   <h3 className="text-xl font-bold">
-                    Sales Manager MBA/B-TECH(Not pursuing)
+                    {specificJob?.job_title}
                   </h3>
-                  <p className="text-gray-600">
-                    Cormier, Turner and Feeney Inc
-                  </p>
+                  <p className="text-gray-600">{specificJob?.company_name}</p>
                 </div>
               </div>
-              <p className="text-gray-600">23 mins ago</p>
+              <p className="text-gray-600">
+                {" "}
+                {specificJob?.posted_time}
+                {"mins ago"}
+              </p>
             </div>
           </div>
         </main>

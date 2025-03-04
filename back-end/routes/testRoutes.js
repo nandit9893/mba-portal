@@ -9,4 +9,8 @@ const router = express.Router();
 router.post("/test-post", userAuth, testPostController);
 
 //export
+<<<<<<< HEAD
 export default router;
+=======
+export default router;
+>>>>>>> 3907a04e3d9b602bbb87b7defc49d693bb290a63

@@ -99,4 +99,15 @@ export const authMiddleware = async (req, res, next) => {
     }
 };
 
+<<<<<<< HEAD
 export default authMiddleware;
+=======
+export default authMiddleware;
+
+
+
+
+
+
+
+>>>>>>> 3907a04e3d9b602bbb87b7defc49d693bb290a63

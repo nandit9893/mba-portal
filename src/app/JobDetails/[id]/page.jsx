@@ -12,7 +12,12 @@ import { useParams } from "next/navigation";
 
 const JobDetailsPage = () => {
   const { id } = useParams();
+<<<<<<< HEAD
   const [specificJob, setSpecificJob] = useState(null);console.log(specificJob)
+=======
+  const [specificJob, setSpecificJob] = useState(null);
+  console.log(specificJob);
+>>>>>>> 6751adfd71622f9dd78a2307a46530eab892f754
   const jobsArray = [
     {
       _id: 1,
@@ -156,7 +161,7 @@ const JobDetailsPage = () => {
     },
   ];
 
-  useEffect(() => {  
+  useEffect(() => {
     if (id) {
       const job = jobsArray.find((item) => item._id === Number(id));
       setSpecificJob(job);
@@ -192,7 +197,7 @@ const JobDetailsPage = () => {
                     <h2 className="text-2xl font-bold">
                       {specificJob?.job_title}
                     </h2>
-                    <p className="text-gray-600">Laffler and Sons</p>
+                    <p className="text-gray-600">{specificJob?.company_name}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -284,13 +289,19 @@ const JobDetailsPage = () => {
                 </div>
                 <div className="flex items-center mb-6">
                   <span className="mr-2">Share Job:</span>
-                  <a href="#" className="text-gray-600 mr-2">
+                  <a
+                    href="#"
+                    className="text-gray-600 mr-2">
                     <i className="fab fa-facebook"></i>
                   </a>
-                  <a href="#" className="text-gray-600 mr-2">
+                  <a
+                    href="#"
+                    className="text-gray-600 mr-2">
                     <i className="fab fa-twitter"></i>
                   </a>
-                  <a href="#" className="text-gray-600">
+                  <a
+                    href="#"
+                    className="text-gray-600">
                     <i className="fab fa-linkedin"></i>
                   </a>
                 </div>
@@ -346,12 +357,10 @@ const JobDetailsPage = () => {
                     />
                     <textarea
                       placeholder="Your Message"
-                      className="w-full mb-2 p-2 border rounded-md"
-                    ></textarea>
+                      className="w-full mb-2 p-2 border rounded-md"></textarea>
                     <button
                       type="submit"
-                      className="bg-teal-700 text-white px-4 py-2 rounded-md w-full"
-                    >
+                      className="bg-teal-700 text-white px-4 py-2 rounded-md w-full">
                       Send Message
                     </button>
                   </form>
@@ -374,11 +383,16 @@ const JobDetailsPage = () => {
                   className="w-12 h-12 rounded-full mr-4"
                 />
                 <div>
-                  <h3 className="text-xl font-bold">Operations Coordinator</h3>
-                  <p className="text-gray-600">Green Group</p>
+                  <h3 className="text-xl font-bold">
+                    {specificJob?.job_title}
+                  </h3>
+                  <p className="text-gray-600">{specificJob?.company_name}</p>
                 </div>
               </div>
-              <p className="text-gray-600">23 mins ago</p>
+              <p className="text-gray-600">
+                {specificJob?.posted_time}
+                {"mins ago"}
+              </p>
             </div>
             <div className="bg-white shadow-md rounded-lg p-6 mb-4">
               <div className="flex items-center mb-4">
@@ -391,12 +405,15 @@ const JobDetailsPage = () => {
                 />
                 <div>
                   <h3 className="text-xl font-bold">
-                    District Intranet Director
+                    {specificJob?.job_title}
                   </h3>
-                  <p className="text-gray-600">Vandervort - Walter Co</p>
+                  <p className="text-gray-600">{specificJob?.company_name} </p>
                 </div>
               </div>
-              <p className="text-gray-600">23 mins ago</p>
+              <p className="text-gray-600">
+                {specificJob?.posted_time}
+                {"mins ago"}
+              </p>
             </div>
             <div className="bg-white shadow-md rounded-lg p-6">
               <div className="flex items-center mb-4">
@@ -409,14 +426,16 @@ const JobDetailsPage = () => {
                 />
                 <div>
                   <h3 className="text-xl font-bold">
-                    Sales Manager MBA/B-TECH(Not pursuing)
+                    {specificJob?.job_title}
                   </h3>
-                  <p className="text-gray-600">
-                    Cormier, Turner and Feeney Inc
-                  </p>
+                  <p className="text-gray-600">{specificJob?.company_name}</p>
                 </div>
               </div>
-              <p className="text-gray-600">23 mins ago</p>
+              <p className="text-gray-600">
+                {" "}
+                {specificJob?.posted_time}
+                {"mins ago"}
+              </p>
             </div>
           </div>
         </main>

@@ -1,6 +1,7 @@
 // index.js
 
 import dotenv from "dotenv";
+dotenv.config();
 
 import express from "express";
 import "express-async-errors";
@@ -28,7 +29,7 @@ import settingsRoutes from "./routes/settingsRoutes.js";// ✅ Fixed import
 
 // Load environment variables early
 
-dotenv.config();
+
 // Log Mongo URL for debugging (to ensure it's being loaded)
 console.log("Mongo URL: ", process.env.MONGO_URL);
 
@@ -63,18 +64,15 @@ app.get("/", (req, res) => {
     res.send("MBA job portal admin backend is running.");
 });
 
-// Error handling middleware
+//validation middelware
 app.use(errorMiddleware);
 
-mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection failed:', err));
-
-// Server Configuration
-const PORT = process.env.PORT || 5000;  // Default to port 5001 if process.env.PORT is undefined
+//port
+const PORT = process.env.PORT || 8080;
+//listen
 app.listen(PORT, () => {
-    console.log(
-        `Node Server Running In ${process.env.DEV_MODE} Mode on port ${PORT}`.bgCyan.white
-    );
+  console.log(
+    `Node Server Running In ${process.env.DEV_MODE} Mode on port no ${PORT}`
+      .bgCyan.white
+  );
 });

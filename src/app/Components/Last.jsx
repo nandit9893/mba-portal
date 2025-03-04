@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -16,23 +15,26 @@ const companies = [
 
 export default function CompanyCarousel() {
   return (
-    <div className="bg-gray-100 py-10">
-      <h2 className="text-3xl font-bold text-center">Top Company</h2>
+    <div className="bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+      <h2 className="text-2xl sm:text-3xl font-bold text-center">Top Company</h2>
       <p className="text-center text-gray-500 mb-6">Our Top Recruiters!</p>
       <Swiper
-        slidesPerView={3}
-        spaceBetween={30}
+        slidesPerView={1}
+        breakpoints={{
+          640: { slidesPerView: 2, spaceBetween: 20 },
+          1024: { slidesPerView: 3, spaceBetween: 30 },
+        }}
         loop={true}
         autoplay={{ delay: 2500, disableOnInteraction: false }}
         modules={[Pagination, Autoplay]}
-        className="w-3/4 mx-auto"
+        className="w-full max-w-5xl mx-auto"
       >
         {companies.map((company, index) => (
           <SwiperSlide key={index} className="flex justify-center">
             <div className="bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center w-60">
               <div className="text-5xl">{company.logo}</div>
-              <h3 className="text-xl font-semibold mt-4">{company.name}</h3>
-              <span className="mt-2 bg-green-100 text-green-700 text-sm px-4 py-1 rounded-full">
+              <h3 className="text-lg sm:text-xl font-semibold mt-4 text-center">{company.name}</h3>
+              <span className="mt-2 bg-green-100 text-green-700 text-xs sm:text-sm px-4 py-1 rounded-full">
                 {company.jobs} open jobs
               </span>
             </div>

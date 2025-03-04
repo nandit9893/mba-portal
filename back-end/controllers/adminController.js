@@ -20,7 +20,7 @@ export const login = async (req, res) => {
                     salary: admin.salary 
                 }, 
                 process.env.JWT_SECRET, 
-                { expiresIn: '1d' }
+                { expiresIn: '1d' }  // Token expires in 1 day
             );
             res.json({ token, mobileNumber: admin.mobileNumber, position: admin.position, salary: admin.salary });
         } else {
@@ -46,5 +46,15 @@ export const register = async (req, res) => {
         res.status(201).json({ message: 'Admin registered successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// ✅ Logout API
+export const logout = async (req, res) => {
+    try {
+        // The client should remove the token from local storage or session
+        res.json({ message: "Logged out successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
     }
 };

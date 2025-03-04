@@ -27,9 +27,9 @@ const LoginPage = () => {
       toast.error("Both fields are required");
       return;
     }
-  
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/user/login`;
     try {
-      const response = await axios.post("http://localhost:5001/api/v1/user/login", {
+      const response = await axios.post(url, {
         email: userLoginIn.email,
         password: userLoginIn.password,
       });

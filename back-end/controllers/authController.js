@@ -5,9 +5,9 @@ import crypto from "crypto";
 // REGISTER CONTROLLER
 export const registerController = async (req, res, next) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, } = req.body;
 
-        if (!name || !email || !password || password.length < 6) {
+        if (!name || !email || !password ||  password.length < 6) {
             return res.status(400).json({ success: false, message: "Invalid input fields" });
         }
 
@@ -81,7 +81,6 @@ export const loginController = async (req, res, next) => {
         next(error);
     }
 };
-
 // forget password cotroller
 export const forgotPasswordController = async (req, res, next) => {
     try {

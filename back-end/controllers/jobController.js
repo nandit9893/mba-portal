@@ -1,37 +1,4 @@
-// import Job from "../models/job.js";
 
-// export const createJob = async (req, res, next) => {
-//     try {
-//         const { category, location, jobType, experience, jobDescription, skills, jobTitle, jobPackage, company, workingMode } = req.body;
-
-//         // Validate required fields
-//         if (!category || !location || !jobType || !experience || !jobDescription || !skills || !jobTitle || !company || !workingMode) {
-//             return res.status(400).json({ success: false, message: "All required fields must be filled" });
-//         }
-
-//         // Create a new job listing
-//         const newJob = await Job.create({
-//             category,
-//             location,
-//             jobType,
-//             experience,
-//             jobDescription,
-//             skills,
-//             jobTitle,
-//             jobPackage,
-//             company,
-//             workingMode
-//         });
-
-//         res.status(201).json({
-//             success: true,
-//             message: "Job created successfully",
-//             job: newJob
-//         });
-//     } catch (error) {
-//         next(error); // Pass error to global error handler middleware
-//     }
-// };
 import path from "path";
 import multer from "multer";
 import moment from "moment";
@@ -218,6 +185,107 @@ export const deleteJobById = async (req, res, next) => {
         });
     } catch (error) {
         next(error);
+    }
+};
+
+export const searchJobs = async (req, res, next) => {
+    try {
+        const { jobTitle, location, experience, jobPackage, category, jobType } = req.query;
+
+        let filter = {};
+
+        if (jobTitle) filter.jobTitle = { $regex: `.*${jobTitle.trim()}.*`, $options: "i" };
+        if (location) filter.location = { $regex: `.*${location.trim()}.*`, $options: "i" };
+        if (experience) filter.experience = { $regex: `.*${experience.trim()}.*`, $options: "i" };
+        if (category) filter.category = { $regex: `.*${category.trim()}.*`, $options: "i" };
+        if (jobType) filter.jobType = { $regex: `.*${jobType.trim()}.*`, $options: "i" };
+
+        // ✅ Filter salary range
+        if (jobPackage) {
+            const [minSalary, maxSalary] = jobPackage.split("-").map(Number);
+            if (!isNaN(minSalary) && !isNaN(maxSalary)) {
+                filter.jobPackage = { $regex: `^(${minSalary}-${maxSalary})$`, $options: "i" };
+            }
+        }
+
+        console.log(" Filter Used:", JSON.stringify(filter, null, 2));
+
+        const jobs = await Job.find(filter);
+
+        console.log(" Jobs Found:", jobs.length ? jobs : "No jobs found");
+
+        if (!jobs.length) {
+            return res.status(404).json({ success: false, message: "No jobs found" });
+        }
+
+        res.status(200).json({ success: true, jobs });
+    } catch (error) {
+        console.error(" Error:", error);
+        next(error);
+    }
+};
+
+
+export const filterJobs = async (req, res) => {
+    try {
+        const filterCriteria = req.query;
+        const filter = {};
+
+        if (filterCriteria.category) {
+            filter.category = { $regex: `.*${filterCriteria.category.trim()}.*`, $options: "i" };
+        }
+        if (filterCriteria.jobType) {
+            filter.jobType = { $regex: `.*${filterCriteria.jobType.trim()}.*`, $options: "i" };
+        }
+        if (filterCriteria.experience) {
+            filter.experience = { $regex: `.*${filterCriteria.experience.trim()}.*`, $options: "i" };
+        }
+        if (filterCriteria.jobPackage) {
+            filter.jobPackage = parseInt(filterCriteria.jobPackage);
+        }
+        if (filterCriteria.createdAt) {
+            const [startDate, endDate] = filterCriteria.createdAt.split("to").map(date => new Date(date.trim()));
+            if (!isNaN(startDate) && !isNaN(endDate)) {
+                filter.createdAt = { $gte: startDate, $lte: endDate };
+            }
+        }
+
+        console.log("Applying Filters:", JSON.stringify(filter, null, 2));
+
+        // Fetch all fields but add a custom 'details' field
+        const jobs = await Job.find(filter);
+
+        if (!jobs.length) {
+            return res.status(404).json({
+                success: false,
+                message: "No jobs found with the selected filters",
+            });
+        }
+
+        console.log(" Filtered Jobs Found:", jobs.length);
+
+        // Modify job data to include 'details' array
+        const formattedJobs = jobs.map(job => ({
+            ...job.toObject(), // Convert Mongoose document to plain object
+            details: [
+                job.category,
+                job.jobType,
+                `${job.jobPackage} LPA`, // Format job package
+                job.location
+            ]
+        }));
+
+        return res.status(200).json({
+            success: true,
+            jobs: formattedJobs
+        });
+    } catch (error) {
+        console.error(" Error Filtering Jobs:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
     }
 };
 

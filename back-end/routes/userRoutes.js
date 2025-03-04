@@ -20,3 +20,4 @@ router.put("/profile", protectUser, updateUserProfile);
 
 // Export the router to be used in the main server file
 export default router;
+

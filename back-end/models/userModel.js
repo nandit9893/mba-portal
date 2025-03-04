@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     profilePic: { type: String, default: "" },
+    location: { type: String, default: true},
     education: [
       {
         degree: String,
@@ -19,7 +20,7 @@ const userSchema = new mongoose.Schema(
     skills: [String],
     experience: [
       {
-        company: String,
+        company: String,//
         role: String,
         duration: String,
       },
@@ -41,10 +42,6 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Generate JWT Token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
-};
 
 // Authentication Middleware
 export const protectUser = async (req, res, next) => {
@@ -68,5 +65,7 @@ export const protectUser = async (req, res, next) => {
 const User = mongoose.model("User", userSchema);
 
 export default User;
-export { generateToken };
+
+
+
 

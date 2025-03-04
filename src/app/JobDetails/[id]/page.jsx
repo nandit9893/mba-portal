@@ -12,7 +12,7 @@ import { useParams } from "next/navigation";
 
 const JobDetailsPage = () => {
   const { id } = useParams();
-  const [specificJob, setSpecificJob] = useState(null);
+  const [specificJob, setSpecificJob] = useState(null);console.log(specificJob)
   const jobsArray = [
     {
       _id: 1,
@@ -190,7 +190,7 @@ const JobDetailsPage = () => {
                   />
                   <div>
                     <h2 className="text-2xl font-bold">
-                      Senior Human Resources Executive
+                      {specificJob?.job_title}
                     </h2>
                     <p className="text-gray-600">Laffler and Sons</p>
                   </div>

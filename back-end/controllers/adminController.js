@@ -1,11 +1,38 @@
-import Admin from '../models/Admin.js';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import dotenv from 'dotenv';
+const Admin = require('../models/Admin');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+require('dotenv').config();
 
-dotenv.config();
+// Register a new Admin
+exports.register = async (req, res) => {
+    const { username, password, mobileNumber, position, salary } = req.body;
 
-const login = async (req, res) => {
+    try {
+        // Check if username exists
+        let adminExists = await Admin.findOne({ username });
+        if (adminExists) {
+            return res.status(400).json({ message: 'Admin already exists' });
+        }
+
+        // Create new admin
+        const admin = new Admin({
+            username,
+            password,
+            mobileNumber,
+            position,
+            salary
+        });
+
+        await admin.save();
+
+        res.status(201).json({ message: 'Admin registered successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+// Login Admin (Already provided)
+exports.login = async (req, res) => {
     const { username, password } = req.body;
     try {
         const admin = await Admin.findOne({ username });
@@ -30,6 +57,3 @@ const login = async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 };
-
-// ✅ Exporting as an object
-export default { login };

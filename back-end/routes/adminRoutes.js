@@ -1,8 +1,11 @@
-import express from "express";
+const express = require('express');
 const router = express.Router();
-import adminController from '../controllers/adminController.js';
+const { register, login } = require('../controllers/adminController');
 
-// Login Route
-router.post('/login', adminController.login);
+// Register Admin
+router.post('/register', register);
 
-export default router;
+// Login Admin
+router.post('/login', login);
+
+module.exports = router;

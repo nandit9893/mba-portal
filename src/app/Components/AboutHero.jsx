@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
+
 const AboutHero = () => {
   return (
     <section className="bg-gray-50 py-12 px-4 md:px-8">

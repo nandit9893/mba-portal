@@ -3,8 +3,10 @@ import Image from "next/image";
 import { FaHotel, FaClock, FaMoneyBillWave, FaLocationArrow } from "react-icons/fa";
 import Link from "next/link";
 import { Bookmark } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const HomeJobsAvailable = () => {
+  const router = useRouter();
   const jobsArray = [
     {
         _id: 1,
@@ -148,6 +150,10 @@ const HomeJobsAvailable = () => {
     },
   ];
 
+  const navigateToJobDetails = (id) => {
+    router.push(`/JobDetails/${id}`);
+  }
+
   return (
     <div className="bg-white sm:p-20 p-5 flex flex-col gap-4">
       <h4 className="sm:text-4xl text-3xl text-black font-semibold text-left">MBA/BBA Jobs Available</h4>
@@ -182,7 +188,7 @@ const HomeJobsAvailable = () => {
                                     ))
                                 }
                             </div>
-                            <Link href="/JobDetails" className="text-white bg-[#309689] px-4 py-2 rounded-2xl">Job Details</Link>
+                            <p onClick={()=>navigateToJobDetails(item._id)} href="/JobDetails" className="cursor-pointer text-white bg-[#309689] px-4 py-2 rounded-2xl">Job Details</p>
                         </div>
                     </div>
                 ))

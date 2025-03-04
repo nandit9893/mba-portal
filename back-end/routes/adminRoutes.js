@@ -1,14 +1,9 @@
-// adminRoutes.js
-
-import express from "express";
-import { getDashboardData } from "../controllers/adminController.js"; // Correctly import the named function
-import { userAuth } from "../middlewares/authMiddleware.js"; // Make sure this is correct
+import express from 'express';
+import { login, register } from '../controllers/adminController.js';
 
 const router = express.Router();
 
-// Define the routes
-router.get("/dashboard", userAuth, getDashboardData);  // Use getDashboardData directly
+router.post('/login', login);
+router.post('/register', register);
 
-// Export the router
 export default router;
-

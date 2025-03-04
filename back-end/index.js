@@ -20,7 +20,11 @@ import adminRoutes from "./routes/adminRoutes.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js"; 
 import paymentRoutes from "./routes/paymentRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
-import applicationRoutes from './routes/applicationRoutes.js';// ✅ Fixed import
+import blogRoutes from "./routes/blogRoutes.js";
+import userProfileRoutes from "./routes/userProfileRoutes.js";
+import applicationRoutes from './routes/applicationRoutes.js';
+import reportRoutes from "./routes/reportRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js";// ✅ Fixed import
 
 // Load environment variables early
 
@@ -50,6 +54,10 @@ app.use("/api/admin", adminRoutes);
 app.use('/payment', paymentRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/application', applicationRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/user/profile", userProfileRoutes);
+app.use("/api/v1/report", reportRoutes);
+app.use("/api/v1/settings", settingsRoutes);
 
 app.get("/", (req, res) => {
     res.send("MBA job portal admin backend is running.");
@@ -64,7 +72,7 @@ mongoose
   .catch((err) => console.error('MongoDB connection failed:', err));
 
 // Server Configuration
-const PORT = process.env.PORT || 5001;  // Default to port 5001 if process.env.PORT is undefined
+const PORT = process.env.PORT || 5000;  // Default to port 5001 if process.env.PORT is undefined
 app.listen(PORT, () => {
     console.log(
         `Node Server Running In ${process.env.DEV_MODE} Mode on port ${PORT}`.bgCyan.white

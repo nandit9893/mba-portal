@@ -13,7 +13,6 @@ import { useParams } from "next/navigation";
 const JobDetailsPage = () => {
   const { id } = useParams();
   const [specificJob, setSpecificJob] = useState(null);
-  console.log(specificJob);
   const jobsArray = [
     {
       _id: 1,

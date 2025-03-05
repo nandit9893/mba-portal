@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaMoon, FaSun, FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [menu, setMenu] = useState("home");
@@ -14,18 +15,16 @@ const Navbar = () => {
   const [slide, setSlide] = useState(null);
   const [viewProfile, setViewProfile] = useState(false);
   const [tokenFromLocalStorage, setTokenFromLocalStorage] = useState(false);
+  const pathname = usePathname(); 
+
+  const fetchToken = () => {
+    const token = localStorage.getItem("authToken");
+    setTokenFromLocalStorage(!!token); // Converts to boolean
+  };
 
   useEffect(() => {
-    const fetchToken = () => {
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        setTokenFromLocalStorage(true);
-      } else {
-        setTokenFromLocalStorage(false);
-      }
-    };
-    fetchToken();
-  }, []);
+    fetchToken(); 
+  }, [pathname]); 
 
   const logOutUser = async () => {
     const token = localStorage.getItem("authToken");

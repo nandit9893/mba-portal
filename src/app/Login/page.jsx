@@ -46,7 +46,6 @@ const LoginPage = () => {
     }
   };
   
-
   return (
     <div className="bg-[#0F0F0F] sm:px-20 sm:py-10 p-5">
       <div className="flex flex-col sm:flex-row sm:gap-0 gap-5 justify-between w-full min-h-screen relative">

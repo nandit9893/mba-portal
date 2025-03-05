@@ -1,14 +1,8 @@
 import localFont from "next/font/local";
 import "./globals.css";
-<<<<<<< HEAD
 import "react-toastify/dist/ReactToastify.css";
-=======
-;
-
->>>>>>> 976c5ced71fe28d0777e4c4e5d227e4d4cdb4a03
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
-
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,7 +26,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Navbar/>
-        
         {children}
         <Footer />
       </body>

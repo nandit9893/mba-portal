@@ -6,7 +6,7 @@ const Header = () => {
       <h1 className="text-2xl font-bold text-center md:text-left">
         MY APPLICATION
       </h1>
-      <div className="w-16 h-16 rounded-full overflow-hidden mt-4 md:mt-0">
+      {/* <div className="w-16 h-16 rounded-full overflow-hidden mt-4 md:mt-0">
         <Image
           src="/logo.jpg"
           alt="Profile Picture"
@@ -14,7 +14,7 @@ const Header = () => {
           height={64}
           className="object-cover"
         />
-      </div>
+      </div> */}
     </header>
   );
 };

@@ -198,7 +198,7 @@ const AdminMainContent = ({ isCollapsed }) => {
         </div>
       </div>
       <p className="text-2xl text-black font-semibold p-2 text-center bg-gray-200 rounded-2xl">Dashboard</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 justify-between gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-between gap-5">
         <div className="flex flex-col rounded-xl p-3 items-center justify-center border-2 border-gray-300 bg-white w-44 shadow-2xl">
           <p className="text-2xl font-semibold text-black">Views</p>
           <div className="flex gap-2 w-full">
@@ -245,10 +245,10 @@ const AdminMainContent = ({ isCollapsed }) => {
           {
             employeesData.slice(prevIndex, nextIndex).map((item) => (
               <div key={item._id} className={`flex justify-between w-full items-center px-2 py-2 rounded-2xl ${ item._id % 2 != 0 ? "bg-gray-200" : "bg-white"}`}>
-                <p className="sm:text-2xl md:text-3xl text-lg font-normal sm:font-medium text-black w-1/4">{item.name}</p>
-                <p className="sm:text-2xl md:text-3xl text-lg font-normal sm:font-medium text-black w-1/4 text-center">{item.position}</p>
-                <p className="sm:text-2xl md:text-3xl text-lg font-normal sm:font-medium text-black w-1/4 text-center">{item.salary}</p>
-                <p className="sm:text-2xl md:text-3xl text-lg font-normal sm:font-medium text-black w-1/4 text-right">{item.mobileNo}</p>
+                <p className="sm:text-xl text-lg font-normal sm:font-medium text-black w-1/4">{item.name}</p>
+                <p className="sm:text-xl text-lg font-normal sm:font-medium text-black w-1/4 text-center">{item.position}</p>
+                <p className="sm:text-xl text-lg font-normal sm:font-medium text-black w-1/4 text-center">{item.salary}</p>
+                <p className="sm:text-xl text-lg font-normal sm:font-medium text-black w-1/4 text-right">{item.mobileNo}</p>
               </div>
             ))
           }

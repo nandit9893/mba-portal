@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { FaHotel, FaClock, FaMoneyBillWave, FaLocationArrow } from "react-icons/fa";
+import { FaHotel, FaClock, FaLocationArrow } from "react-icons/fa";
+import { MdWork } from "react-icons/md"
 import Link from "next/link";
 import { Bookmark } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,148 +9,7 @@ import axios from "axios";
 
 const HomeJobsAvailable = () => {
   const router = useRouter();
-  const jobsArray = [
-    {
-        _id: 1,
-        job_title: "HR Manager",
-        company_name: "GenXhire and Co",
-        posted_time: "10",
-        assets: [
-            {
-                _id: 11,
-                icon: <FaHotel className="text-xl text-[#309689]" />,
-                title: "Hotel & Tourism",
-            },
-            {
-                _id: 12,
-                icon: <FaClock className="text-xl text-[#309689]" />,
-                title: "Full Time",
-            },
-            {
-                _id: 13,
-                icon: <FaMoneyBillWave className="text-xl text-[#309689]" />,
-                title: "$40000 - $42000",
-            },
-            {
-                _id: 14,
-                icon: <FaLocationArrow className="text-xl text-[#309689]" />,
-                title: "New-York, USA",
-            },
-        ],
-    },
-    {
-        _id: 2,
-        job_title: "HR Operations",
-        company_name: "Polymed Solutions",
-        posted_time: "20",
-        assets: [
-            {
-                _id: 11,
-                icon: <FaHotel className="texl text-[#309689]" />,
-                title: "Media",
-            },
-            {
-                _id: 12,
-                icon: <FaClock className="texl text-[#309689]" />,
-                title: "Part Time",
-            },
-            {
-                _id: 13,
-                icon: <FaMoneyBillWave className="texl text-[#309689]" />,
-                title: "$28000 - $32000",
-            },
-            {
-                _id: 14,
-                icon: <FaLocationArrow className="texl text-[#309689]" />,
-                title: "Los-Angeles, USA",
-            },
-        ],
-    },
-    {
-        _id: 3,
-        job_title: "Senior Human Resources Executive",
-        company_name: "Mraz, Quiley and Feest Inc.",
-        posted_time: "15",
-        assets: [
-            {
-                _id: 11,
-                icon: <FaHotel className="texxl text-[#309689]" />,
-                title: "Construction",
-            },
-            {
-                _id: 12,
-                icon: <FaClock className="texxl text-[#309689]" />,
-                title: "Full Time",
-            },
-            {
-                _id: 13,
-                icon: <FaMoneyBillWave className="texxl text-[#309689]" />,
-                title: "$48000 - $52000",
-            },
-            {
-                _id: 14,
-                icon: <FaLocationArrow className="texxl text-[#309689]" />,
-                title: "Texas, USA",
-            },
-        ],
-    },
-    {
-        _id: 4,
-        job_title: "Sr. Executive HR ops & Payroll",
-        company_name: "VonRueden - Weber Co.",
-        posted_time: "30",
-        assets: [
-            {
-                _id: 11,
-                icon: <FaHotel className="textxl text-[#309689]" />,
-                title: "Hotel & Tourism",
-            },
-            {
-                _id: 12,
-                icon: <FaClock className="textxl text-[#309689]" />,
-                title: "Full Time",
-            },
-            {
-                _id: 13,
-                icon: <FaMoneyBillWave className="textxl text-[#309689]" />,
-                title: "$42000 - $48000",
-            },
-            {
-                _id: 14,
-                icon: <FaLocationArrow className="textxl text-[#309689]" />,
-                title: "Florida, USA",
-            },
-        ],
-    },
-    {
-        _id: 5,
-        job_title: "Retail Sales Executive/Senior Sales Executive",
-        company_name: "Flatley Inc.",
-        posted_time: "5",
-        assets: [
-            {
-                _id: 11,
-                icon: <FaHotel className="text-xl text-[#309689]" />,
-                title: "Hotel & Tourism",
-            },
-            {
-                _id: 12, 
-                icon: <FaClock className="text-xl text-[#309689]" />,
-                title: "Full Time",
-            },
-            {
-                _id: 13,
-                icon: <FaMoneyBillWave className="text-xl text-[#309689]" />,
-                title: "$40000 - $42000",
-            },
-            {
-                _id: 14,
-                icon: <FaLocationArrow className="text-xl text-[#309689]" />,
-                title: "New-York, USA",
-            },
-        ],
-    },
-  ];
+  const [jobFromDatabase, setJobFromDatabase] = useState(null);
 
   const navigateToJobDetails = (id) => {
     router.push(`/JobDetails/${id}`);
@@ -161,7 +21,7 @@ const HomeJobsAvailable = () => {
       try {
         const response = await axios.get(url);
         if (response.data.success) {
-            console.log(response.data.jobs)
+            setJobFromDatabase(response.data.jobs);
         }
       } catch (error) {
         console.log(error);
@@ -169,6 +29,25 @@ const HomeJobsAvailable = () => {
     };
     fetchLocationsJobsCompanyLocations();
   }, []);
+
+  const timeAgo = (timestamp) => {
+    const now = new Date();
+    const postedDate = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - postedDate) / 1000);
+    if (diffInSeconds < 60) {
+      return `${diffInSeconds} sec ago`;
+    } else if (diffInSeconds < 3600) {
+      return `${Math.floor(diffInSeconds / 60)} min ago`;
+    } else if (diffInSeconds < 86400) {
+      return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    } else {
+      return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    }
+  };
+
+  const capitalizeWords = (str) => {
+    return str.replace(/\b\w/g, (char) => char.toUpperCase());
+  };
 
   return (
     <div className="bg-white sm:p-20 p-5 flex flex-col gap-4">
@@ -180,31 +59,55 @@ const HomeJobsAvailable = () => {
         </div>
         <div className="flex flex-col gap-8">
             {
-                jobsArray.slice(0, 6).map((item) => (
+                jobFromDatabase && jobFromDatabase.map((item) => (
                     <div className="sm:p-10 p-5 flex flex-col gap-4 w-full shadow-2xl rounded-2xl" key={item._id}>
                         <div className="flex justify-between items-center w-full">
-                            <p className="text-[#309689] bg-green-100 px-4 py-2 rounded-2xl">{item.posted_time} min ago</p>
+                            <p className="text-[#309689] bg-green-100 px-4 py-2 rounded-2xl">{timeAgo(item.createdAt)}</p>
                             <Bookmark className="text-black text-2xl"/>
                         </div>
                         <div className="flex items-center gap-5">
                             <Image src="/job.jpeg" className="rounded-full" width={40} height={40} style={{width: "auto"}} alt="Picture of the author"/>
                             <div className="flex flex-col gap-1">
-                                <p className="text-xl font-semibold">{item.job_title}</p>
-                                <p className="text-xs font-medium">{item.company_name}</p>
+                                <p className="text-xl font-semibold">{capitalizeWords(item.jobTitle)}</p>
+                                <p className="text-lg font-medium">{capitalizeWords(item.company)}</p>
                             </div>
                         </div>
                         <div className="flex justify-between items-center w-full">
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-10 gap-5">
                                 {
-                                    item.assets.map((itemAssests) => (
-                                        <div className="flex gap-3 items-center" key={itemAssests._id}>
-                                            {itemAssests.icon}
-                                            <p className="text-gray-600">{itemAssests.title}</p>
+                                    item.category && (
+                                        <div className="flex gap-3 items-center">
+                                            <FaHotel className="text-xl text-[#309689]" />
+                                            <p className="text-gray-600">{capitalizeWords(item.category)}</p>
                                         </div>
-                                    ))
+                                    )
+                                }
+                                {
+                                    item.jobType && (
+                                        <div className="flex gap-3 items-center">
+                                            <FaClock className="text-xl text-[#309689]" />
+                                            <p className="text-gray-600">{capitalizeWords(item.jobType)}</p>
+                                        </div>
+                                    )
+                                }
+                                {
+                                    item.location && (
+                                        <div className="flex gap-3 items-center">
+                                            <FaLocationArrow className="text-xl text-[#309689]" />
+                                            <p className="text-gray-600">{capitalizeWords(item.location)}</p>
+                                        </div>
+                                    )
+                                }
+                                {
+                                    item.experience && (
+                                        <div className="flex gap-3 items-center">
+                                            <MdWork className="text-xl text-[#309689]" />
+                                            <p className="text-gray-600">{item.experience} experience</p>
+                                        </div>
+                                    )
                                 }
                             </div>
-                            <p onClick={()=>navigateToJobDetails(item._id)} href="/JobDetails" className="cursor-pointer text-white bg-[#309689] px-4 py-2 rounded-2xl">Job Details</p>
+                            <p onClick={()=>navigateToJobDetails(item._id)} className="cursor-pointer text-white bg-[#309689] px-4 py-2 rounded-2xl">Job Details</p>
                         </div>
                     </div>
                 ))

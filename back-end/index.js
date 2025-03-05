@@ -1,6 +1,7 @@
 // index.js
 
 import dotenv from "dotenv";
+dotenv.config();
 
 import express from "express";
 import "express-async-errors";
@@ -21,14 +22,14 @@ import errorMiddleware from "./middlewares/errorMiddleware.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
-import userProfileRoutes from "./routes/userProfileRoutes.js";
-import applicationRoutes from './routes/applicationRoutes.js';
+import profileRoutes from "./routes/profileRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";// ✅ Fixed import
 
 // Load environment variables early
 
-dotenv.config();
+
 // Log Mongo URL for debugging (to ensure it's being loaded)
 console.log("Mongo URL: ", process.env.MONGO_URL);
 
@@ -44,6 +45,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use('/public', express.static('public'));
+app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 // Routes
 app.use("/api/v1/test", testRoutes);
@@ -53,9 +55,9 @@ app.use("/api/v1/job", jobRoutes);
 app.use("/api/admin", adminRoutes);
 app.use('/payment', paymentRoutes);
 app.use('/api/resumes', resumeRoutes);
-app.use('/api/application', applicationRoutes);
+app.use("/api/applications", applicationRoutes);
 app.use("/api/blogs", blogRoutes);
-app.use("/api/user/profile", userProfileRoutes);
+app.use("/api", profileRoutes);
 app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/settings", settingsRoutes);
 
@@ -63,18 +65,15 @@ app.get("/", (req, res) => {
     res.send("MBA job portal admin backend is running.");
 });
 
-// Error handling middleware
+//validation middelware
 app.use(errorMiddleware);
 
-mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection failed:', err));
-
-// Server Configuration
-const PORT = process.env.PORT || 5000;  // Default to port 5001 if process.env.PORT is undefined
+//port
+const PORT = process.env.PORT || 8080;
+//listen
 app.listen(PORT, () => {
-    console.log(
-        `Node Server Running In ${process.env.DEV_MODE} Mode on port ${PORT}`.bgCyan.white
-    );
+  console.log(
+    `Node Server Running In ${process.env.DEV_MODE} Mode on port no ${PORT}`
+      .bgCyan.white
+  );
 });

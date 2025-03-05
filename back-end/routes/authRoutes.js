@@ -1,36 +1,47 @@
 import express from "express";
 import {
-    forgotPasswordController,
-    loginController,
-    registerController,
-    // resetPasswordController,
-    
+  loginController,
+  registerController,
 } from "../controllers/authController.js";
+import { requestPasswordReset, resetPassword, logoutUser, verifyToken } from '../controllers/authController.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
+
 import rateLimit from "express-rate-limit";
 
-// IP rate limiter
+//ip limiter
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per 15 minutes
-    standardHeaders: true, // Return rate limit info in the RateLimit-* headers
-    legacyHeaders: false, // Disable the X-RateLimit-* headers
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-// Router object
+
+
+
+
+
+//router object
 const router = express.Router();
 
-// Apply rate limiter to all auth routes
-router.use(limiter);
 
-// REGISTER || POST
-router.post("/register", registerController);
+
+
+// REGISTER || POPST
+router.post("/register", limiter, registerController);
+
 
 // LOGIN || POST
-router.post("/login", loginController);
+router.post("/login", limiter, loginController);
 
-//Forget and Reset Password Routes
-router.post("/forgot-password", forgotPasswordController);
-// router.post("/reset-password/:token", resetPasswordController);
+// Request Password Reset (POST)
+router.post('/request-password-reset', requestPasswordReset);
 
-// Export router
+// Reset Password (POST)
+router.post('/reset-password', resetPassword);
+
+router.post('/logout', authMiddleware, logoutUser); // Protect logout route
+
+
+//export
 export default router;

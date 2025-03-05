@@ -1,134 +1,179 @@
-import bcrypt from "bcryptjs";
+import nodemailer from 'nodemailer';
+import crypto from 'crypto';
+import multer from 'multer';
 import userModel from "../models/userModel.js";
-import crypto from "crypto";
+import dotenv from 'dotenv';
 
-// REGISTER CONTROLLER
+dotenv.config();
+
+
 export const registerController = async (req, res, next) => {
-    try {
-        const { name, email, password, } = req.body;
-
-        if (!name || !email || !password ||  password.length < 6) {
-            return res.status(400).json({ success: false, message: "Invalid input fields" });
-        }
-
-        // Check if user already exists
-        const existingUser = await userModel.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ success: false, message: "Email already registered" });
-        }
-
-        // Hash password before saving
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        // Create new user
-        const user = await userModel.create({ name, email, password: hashedPassword });
-
-        // Generate token
-        const token = user.createJWT();
-
-        res.status(201).json({
-            success: true,
-            message: "User registered successfully",
-            user: {
-                name: user.name,
-                lastName: user.lastName || "",
-                email: user.email,
-                location: user.location || "",
-            },
-            token,
-        });
-    } catch (error) {
-        next(error);
-    }
+  const { name, email, password } = req.body;
+  //validate
+  if (!name) {
+    next("name is required");
+  }
+  if (!email) {
+    next("email is required");
+  }
+  if (!password) {
+    next("password is required and greater than 6 character");
+  }
+  const exisitingUser = await userModel.findOne({ email });
+  if (exisitingUser) {
+    next("Email Already Register Please Login");
+  }
+  const user = await userModel.create({ name, email, password });
+  //token
+  const token = user.createJWT();
+  res.status(201).send({
+    sucess: true,
+    message: "User Created Successfully",
+    user: {
+      name: user.name,
+      lastName: user.lastName,
+      email: user.email,
+      location: user.location,
+    },
+    token,
+  });
 };
 
-// LOGIN CONTROLLER
+
+//Logout Function (Invalidate Token)
+export const logoutUser = async (req, res) => {
+  try {
+      // ✅ Option 1: Just send success response (For stateless JWT authentication)
+      res.status(200).json({ message: "User logged out successfully!" });
+
+      // ✅ Option 2: If using token blacklisting (Optional)
+      // Add token to a blacklist or remove from database
+      // await TokenBlacklist.create({ token: req.token });
+
+  } catch (error) {
+      console.error("Logout Error:", error);
+      res.status(500).json({ message: "Logout failed", error: error.message });
+  }
+};
+
+// Middleware to Check if Token is Blacklisted
+export const verifyToken = (req, res, next) => {
+    const token = req.header("Authorization");
+    if (!token) return res.status(401).json({ message: "Access Denied" });
+
+    if (blacklistedTokens.includes(token)) {
+        return res.status(401).json({ message: "Token is invalid. Please log in again." });
+    }
+
+    try {
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = verified;
+        next();
+    } catch (error) {
+        res.status(400).json({ message: "Invalid Token" });
+    }
+};
+//login Controller
 export const loginController = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-
-        // Validate input fields
-        if (!email || !password) {
-            return res.status(400).json({ success: false, message: "Please provide email and password" });
-        }
-
-        // Check if user exists
-        const user = await userModel.findOne({ email }).select("+password");
-        if (!user) {
-            return res.status(401).json({ success: false, message: "Invalid email or password" });
-        }
-
-        // Compare passwords
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
-        if (!isPasswordMatch) {
-            return res.status(401).json({ success: false, message: "Invalid email or password" });
-        }
-
-        // Generate token
-        const token = user.createJWT();
-
-        // Remove password from response
-        user.password = undefined;
-
-        res.status(200).json({
-            success: true,
-            message: "Login successful",
-            user,
-            token,
-        });
-    } catch (error) {
-        next(error);
-    }
+  const { email, password } = req.body;
+  //validation
+  if (!email || !password) {
+    next("Please Provide All Fields");
+  }
+  //find user by email
+  const user = await userModel.findOne({ email }).select("+password");
+  if (!user) {
+    next("Invalid Useraname or password");
+  }
+  //compare password
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    next("Invalid Useraname or password");
+  }
+  user.password = undefined;
+  const token = user.createJWT();
+  res.status(200).json({
+    success: true,
+    message: "Login SUccessfully",
+    user,
+    token,
+  });
 };
-// forget password cotroller
-export const forgotPasswordController = async (req, res, next) => {
-    try {
-        const { email } = req.body;
+//request reset password
+export const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
 
-        //check if user exist
-        const user = await userModel.findOne({ email });
-        if (!user) {
-            return next(new Error("User not found with this email"));
-        }
+  // Check if the email exists in the database
+  const user = await User.findOne({ email });
+  if (!user) {
+      return res.status(404).json({ success: false, message: 'User with this email does not exist.' });
+  }
 
-        //generate reset token
-        const resetToken = user.getResetPasswordToken();
-        await user.save();
+  // Generate a password reset token
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  user.resetPasswordToken = resetToken;
+  user.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
 
-        //send email (configure nodemailer)
-        const transport = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.SMTP_EMAIL,
-                pass: process.env.SMTP_PASSWORD,
-            },
-        });
+  await user.save();
 
-        //email message
-        const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-        const message = `You requested a password reset. Click on the link below to reset your password:\n\n${resetUrl}\n\nThis link is valid for 15 minutes only.`;
+  // Send email with reset token
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: process.env.EMAIL_USER, // Your email
+          pass: process.env.EMAIL_PASS, // Your email password
+      },
+  });
 
-        //send email
-        await WebTransportError.sendMail({
-            from: process.env.SMTP_EMAIL,
-            to: user.email,
-            subject: "Password Reset Request",
-            text: message,
-        });
+  const resetURL = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
 
-        res.status(200).json({
-            success: true,
-            message: "Reset password link sent to your email.",
-        });
-    } catch (error) {
-        next(error);
-    }
+  const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: 'Password Reset Request',
+      text: `You requested a password reset. Click the link below to reset your password:\n\n${resetURL}`,
+  };
+
+  transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+          return res.status(500).json({ success: false, message: 'Failed to send email. Please try again.' });
+      }
+
+      res.status(200).json({
+          success: true,
+          message: 'Password reset email sent successfully.',
+      });
+  });
 };
-// const resetPasswordController = (req, res) => {
-//     // Your reset password logic here
-//   };
-  
-//   module.exports = {
-//     resetPasswordController,
-//   };
+
+
+
+
+
+//reset password
+export const resetPassword = async (req, res) => {
+  const { resetToken, newPassword } = req.body;
+
+  // Find the user by the reset token and check if the token has expired
+  const user = await User.findOne({ passwordResetToken: resetToken, passwordResetExpires: { $gt: Date.now() } });
+
+  if (!user) {
+    return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });
+  }
+
+  // Hash the new password
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(newPassword, salt);
+
+  // Clear reset token and expiration
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  // Save the user with the new password
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: 'Password has been reset successfully.',
+  });
+};

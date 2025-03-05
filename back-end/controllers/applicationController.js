@@ -1,4 +1,37 @@
-import Application from "../models/applicationModel.js"; 
+// controllers/applicationController.js
+import applicationModel from "../models/applicationModel.js";
+
+export const applyJob = async (req, res) => {
+  try {
+    const { jobId, resume } = req.body;
+    const newApplication = new Application({
+      candidate: req.user.userId,
+      job: jobId,
+      resume,
+    });
+    await newApplication.save();
+    res.status(201).json(newApplication);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*import Application from "../models/applicationModel.js"; 
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 // Ensure correct import
 import Job from "../models/job.js"; // Assuming you have a Job model
@@ -48,4 +81,4 @@ export const getApplications = async (req, res) => {
     console.error('Error fetching applications:', error);
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
-};
+};*/

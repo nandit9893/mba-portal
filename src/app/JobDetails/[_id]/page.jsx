@@ -7,6 +7,7 @@ import Head from "next/head";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const JobDetailsPage = () => {
   const router = useRouter();
@@ -16,7 +17,7 @@ const JobDetailsPage = () => {
 
   const navigateToJobDetails = (id) => {
     router.push(`/JobDetails/${id}`);
-  }
+  };
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -60,6 +61,33 @@ const JobDetailsPage = () => {
     } else {
       return `${Math.floor(diffInSeconds / 86400)} days ago`;
     }
+  };
+
+  const applyThisJob = async () => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+    if (!token) {
+        toast.error("You are not logged in!");
+        router.push("/Login");
+        return;
+    }
+    const newURL = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/applications/applyForJob`;
+    try {
+      const response = await axios.post(
+        newURL,
+        { jobId: specificJob._id }, // Send only jobId
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        }
+      );
+      if (response.data.success) {
+          toast.success(response.data.message || "Job Applied Successfully");
+      }
+      } catch (error) {
+       toast.error(error.response?.data?.message || "Server error");
+      }
   };
 
   return (
@@ -113,7 +141,7 @@ const JobDetailsPage = () => {
                   </span>
                   <button
                     className="bg-teal-700 text-white mr-2 px-4 py-0.5 rounded hover:bg-teal-800 transition duration-300"
-                    onClick={() => alert("Job application submitted!")}
+                    onClick={applyThisJob}
                   >
                     Apply Job
                   </button>
@@ -268,49 +296,51 @@ const JobDetailsPage = () => {
               </div>
             </div>
           </div>
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Related Jobs</h2>
-            <p className="text-gray-600 mb-6">
-              Latest Job Openings Matching Your Skills
-            </p>
-            <div className="bg-white shadow-md rounded-lg p-6 mb-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {relatedJobs?.map((item) => (
-                  <div
-                    className="flex items-center p-4 bg-gray-100 rounded-lg shadow-sm"
-                    key={item._id}
-                  >
-                    <Image
-                      src="/operation.jpg"
-                      width={50}
-                      height={50}
-                      alt="Company Logo"
-                      className="w-12 h-12 rounded-full mr-4"
-                    />
-                    <div className="flex-1 flex-col">
-                      <div className="flex justify-between w-full">
-                        <h3 className="text-xl font-bold">
-                          {capitalizeWords(item?.jobTitle)}
-                        </h3>
-                        <p
-                          onClick={() => navigateToJobDetails(item._id)}
-                          className="cursor-pointer text-white bg-[#309689] px-4 py-2 rounded-2xl"
-                        >
-                          Job Details
+          {relatedJobs && relatedJobs.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-2xl font-bold mb-4">Related Jobs</h2>
+              <p className="text-gray-600 mb-6">
+                Latest Job Openings Matching Your Skills
+              </p>
+              <div className="bg-white shadow-md rounded-lg p-6 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {relatedJobs?.map((item) => (
+                    <div
+                      className="flex items-center p-4 bg-gray-100 rounded-lg shadow-sm"
+                      key={item._id}
+                    >
+                      <Image
+                        src="/operation.jpg"
+                        width={50}
+                        height={50}
+                        alt="Company Logo"
+                        className="w-12 h-12 rounded-full mr-4"
+                      />
+                      <div className="flex-1 flex-col">
+                        <div className="flex justify-between w-full">
+                          <h3 className="text-xl font-bold">
+                            {capitalizeWords(item?.jobTitle)}
+                          </h3>
+                          <p
+                            onClick={() => navigateToJobDetails(item._id)}
+                            className="cursor-pointer text-white bg-[#309689] px-4 py-2 rounded-2xl"
+                          >
+                            Job Details
+                          </p>
+                        </div>
+                        <p className="text-gray-600">
+                          {capitalizeWords(item?.company)}
+                        </p>
+                        <p className="text-gray-500 text-sm">
+                          {timeAgo(item?.createdAt)}
                         </p>
                       </div>
-                      <p className="text-gray-600">
-                        {capitalizeWords(item?.company)}
-                      </p>
-                      <p className="text-gray-500 text-sm">
-                        {timeAgo(item?.createdAt)}
-                      </p>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </main>
       </div>
     </div>

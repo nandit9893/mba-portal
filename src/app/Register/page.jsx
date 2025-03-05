@@ -2,9 +2,9 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import Image from "next/image";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -23,7 +23,8 @@ const RegisterPage = () => {
     }));
   };
   
-  const registerUser = async () => {
+  const registerUser = async (event) => {
+    event.preventDefault();
     if (!userSignUp.name) {
       toast.error("Name is required");
       return;
@@ -90,7 +91,7 @@ const RegisterPage = () => {
             <div className="w-5 h-[2px] bg-[#4D4D4D]"></div>
           </div>
         </div>
-        <div className="flex flex-col gap-5 justify-center sm:w-1/3 w-full h-full border-[1px] border-white shadow-2xl p-8 rounded-2xl">
+        <form onSubmit={(event)=>registerUser(event)} className="flex flex-col gap-5 justify-center sm:w-1/3 w-full h-full border-[1px] border-white shadow-2xl p-8 rounded-2xl">
           <p className="text-white text-2xl font-semibold text-center">User Sign up</p>
           <div className="flex flex-col gap-3 w-full">
             <input required onChange={inputChangeHandler} value={userSignUp.name} name="name" type="text" placeholder="Name" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
@@ -99,7 +100,7 @@ const RegisterPage = () => {
             <input required onChange={inputChangeHandler} value={userSignUp.confirmPassword} name="confirmPassword" type="password" placeholder="Confirm Password" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
           </div>
           <div className="flex flex-col gap-2 w-full">
-            <button onClick={registerUser} className="bg-[#309689] rounded-2xl text-white p-2 text-xl font-semibold text-center w-full">Sign up</button>
+            <button type="submit" className="bg-[#309689] rounded-2xl text-white p-2 text-xl font-semibold text-center w-full">Sign up</button>
             <Link href="/AdminLogin" className="text-white text-center text-[18px] bg-black p-2 rounded-2xl border-2 border-white">Admin Sign Up</Link>
           </div>
           <div className="flex gap-3 items-center w-full">
@@ -118,7 +119,7 @@ const RegisterPage = () => {
             <p className="text-white text-[14px] font-semibold">Support</p>
             <p className="text-white text-[14px] font-semibold">Customer Care</p>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

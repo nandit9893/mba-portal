@@ -5,9 +5,9 @@ import { HiOutlineMenu } from "react-icons/hi";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FaMoon, FaSun, FaUser } from "react-icons/fa";
-import { toast } from "react-toastify";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [menu, setMenu] = useState("home");

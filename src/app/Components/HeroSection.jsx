@@ -4,7 +4,6 @@ import { FaBuilding, FaSearch, FaUser } from "react-icons/fa";
 import { BiShoppingBag } from "react-icons/bi";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 const HeroSection = () => {

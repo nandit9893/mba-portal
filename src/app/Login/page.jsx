@@ -3,8 +3,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation"; 
-import { toast } from "react-toastify";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [userLoginIn, setUserLoginIn] = useState({
@@ -23,6 +23,7 @@ const LoginPage = () => {
   }
 
   const loginUser = async () => {
+    event.preventDefault();
     if (!userLoginIn.email || !userLoginIn.password) {
       toast.error("Both fields are required");
       return;
@@ -74,11 +75,11 @@ const LoginPage = () => {
             <div className="w-5 h-[2px] bg-[#4D4D4D]"></div>
           </div>
         </div>
-        <div className="flex flex-col gap-5 justify-center w-full sm:w-1/3 h-full border-[1px] border-white shadow-2xl p-8 rounded-2xl">
+        <form onSubmit={loginUser} className="flex flex-col gap-5 justify-center w-full sm:w-1/3 h-full border-[1px] border-white shadow-2xl p-8 rounded-2xl">
           <p className="text-white text-2xl font-semibold text-center">User Login</p>
           <div className="flex flex-col gap-3 w-full">
-              <input value={userLoginIn.email} required onChange={inputChangeHandler} name="email" type="email" placeholder="Email" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
-              <input value={userLoginIn.password} required onChange={inputChangeHandler} name="password" type="password" placeholder="Password" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
+            <input  autoComplete="username" value={userLoginIn.email} required onChange={inputChangeHandler} name="email" type="email" placeholder="Email" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
+            <input autoComplete="current-password" value={userLoginIn.password} required onChange={inputChangeHandler} name="password" type="password" placeholder="Password" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
           </div>
           <div className="flex justify-start gap-3 items-center">
             <input type="checkbox" className="peer hidden" id="customCheckbox" />
@@ -86,7 +87,7 @@ const LoginPage = () => {
             <label htmlFor="customCheckbox" className="text-gray-400 peer-checked:text-white cursor-pointer text-[14px]">Remember me</label>
           </div>
           <div className="flex flex-col gap-2 w-full">
-            <button onClick={loginUser} className="bg-[#309689] rounded-2xl text-white p-2 text-xl font-semibold text-center w-full">Login</button>
+            <button type="submit" className="bg-[#309689] rounded-2xl text-white p-2 text-xl font-semibold text-center w-full">Login</button>
             <p className="text-white text-center text-[14px]">Forgot Password ?</p>
             <Link href="/AdminLogin" className="text-white text-center text-[18px] bg-black p-2 rounded-2xl border-2 border-white">Admin Login</Link>
           </div>
@@ -106,7 +107,7 @@ const LoginPage = () => {
             <p className="text-white text-[14px] font-semibold">Support</p>
             <p className="text-white text-[14px] font-semibold">Customer Care</p>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

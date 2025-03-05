@@ -46,7 +46,7 @@ export const applyForJob = async (req, res) => {
         try {
             const { jobId } = req.body;
             const candidateId = req.user.userId; // Extracted from authenticated user's token
-
+console.log(jobId, candidateId)
             // Validate inputs
             if (!jobId) {
                 return res.status(400).json({ success: false, message: "Job ID is required" });
@@ -57,7 +57,7 @@ export const applyForJob = async (req, res) => {
             if (!job) {
                 return res.status(404).json({ success: false, message: "Job not found" });
             }
-
+console.log(job)
             // Prevent duplicate applications
             const existingApplication = await Application.findOne({ candidate: candidateId, job: jobId });
             if (existingApplication) {

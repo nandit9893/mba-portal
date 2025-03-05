@@ -40,7 +40,7 @@ router.post('/request-password-reset', requestPasswordReset);
 // Reset Password (POST)
 router.post('/reset-password', resetPassword);
 
-router.post('/logout', authMiddleware, logoutUser); // Protect logout route
+router.post('/logout', limiter, logoutUser); // Protect logout route
 
 
 //export

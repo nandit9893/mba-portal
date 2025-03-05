@@ -7,12 +7,13 @@ import GoodCompanyOverview from "../Components/GoodCompanyOverview";
 import CTA from "../Components/CTA";
 import NewsBlog from "../Components/NewsBlog";
 import Testinomials from "../Components/Testinomials";
+import HeroSection from "../Components/HeroSection";
 
 const HomePage = () => {
   
   return (
     <div>
-       
+      <HeroSection/>
       <HomeJobsAvailable />
       <JobsCategory />
       <GoodCompanyOverview />

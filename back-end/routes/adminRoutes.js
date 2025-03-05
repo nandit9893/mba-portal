@@ -1,11 +1,11 @@
 import express from 'express';
-import { login, register, logout } from '../controllers/adminController.js';
+import { loginAdmin, registerAdmin, logoutAdmin } from '../controllers/adminController.js';
 
 const router = express.Router();
 
 // Admin Authentication Routes
-router.post('/login', login);
-router.post('/register', register);
-router.post('/logout', logout);
+router.post('/login', loginAdmin);
+router.post('/register', registerAdmin);
+router.post('/logout', logoutAdmin);
 
 export default router;

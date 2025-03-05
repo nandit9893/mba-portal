@@ -5,56 +5,103 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const login = async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        const admin = await Admin.findOne({ username });
-
-        if (admin && (await bcrypt.compare(password, admin.password))) {
-            const token = jwt.sign(
-                { 
-                    id: admin._id, 
-                    username, 
-                    mobileNumber: admin.mobileNumber, 
-                    position: admin.position, 
-                    salary: admin.salary 
-                }, 
-                process.env.JWT_SECRET, 
-                { expiresIn: '1d' }  // Token expires in 1 day
-            );
-            res.json({ token, mobileNumber: admin.mobileNumber, position: admin.position, salary: admin.salary });
-        } else {
-            res.status(401).json({ message: 'Invalid Credentials' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+export const loginAdmin = async (req, res, next) => {
+    const { email, password } = req.body;
+  
+    // Validate input
+    if (!email || !password) {
+      return next("Please provide all fields");
     }
-};
-
-export const register = async (req, res) => {
-    const { username, password, mobileNumber, position, salary } = req.body;
+  
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newAdmin = new Admin({
-            username,
-            password: hashedPassword,
-            mobileNumber,
-            position,
-            salary
-        });
-        await newAdmin.save();
-        res.status(201).json({ message: 'Admin registered successfully' });
+      // Find admin by email
+      const admin = await Admin.findOne({ email });
+      if (!admin) return next("Invalid email or password");
+  
+      // Compare password
+      const isMatch = await bcrypt.compare(password, admin.password);
+      if (!isMatch) return next("Invalid email or password");
+  
+      // Generate JWT token
+      const token = jwt.sign({ adminId: admin._id }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+  
+      res.status(200).json({
+        success: true,
+        message: "Login successful",
+        admin: {
+          username: admin.username,
+          email: admin.email,
+        },
+        token,
+      });
     } catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+      next(error);
     }
-};
+  };
+  
+
+export const registerAdmin = async (req, res, next) => {
+    const { username, email, password } = req.body;
+  
+    // Validate input
+    if (!username) return next("Username is required");
+    if (!email) return next("Email is required");
+    if (!password || password.length < 6)
+      return next("Password is required and must be at least 6 characters");
+  
+    try {
+      // Check if admin already exists
+      const existingAdmin = await Admin.findOne({ email });
+      if (existingAdmin) return next("Email already registered. Please login");
+  
+      // Create new admin
+      const newAdmin = new Admin({ username, email, password });
+      await newAdmin.save();
+  
+      // Generate JWT token
+      const token = jwt.sign({ adminId: newAdmin._id }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+  
+      res.status(201).json({
+        success: true,
+        message: "Admin registered successfully",
+        admin: {
+          username: newAdmin.username,
+          email: newAdmin.email,
+        },
+        token,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  
 
 // ✅ Logout API
-export const logout = async (req, res) => {
+export const logoutAdmin = async (req, res) => {
     try {
-        // The client should remove the token from local storage or session
-        res.json({ message: "Logged out successfully" });
+        // ✅ Option 1: Send a success response (For stateless JWT authentication)
+        res.status(200).json({
+            success: true,
+            message: "Admin logged out successfully!"
+        });
+
+        // ✅ Option 2: Clear the token from cookies (if using cookies)
+        // res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "Strict" });
+
+        // ✅ Option 3: If using token blacklisting, store the token in a blacklist (Optional)
+        // await TokenBlacklist.create({ token: req.token });
+
     } catch (error) {
-        res.status(500).json({ message: "Server Error" });
+        console.error("Logout Error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Logout failed",
+            error: error.message
+        });
     }
 };
+

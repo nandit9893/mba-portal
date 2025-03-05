@@ -44,7 +44,7 @@ const RegisterPage = () => {
       toast.error("Passwords do not match");
       return;
     }
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/user/register`;
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/auth/register`;
     try {
       const response = await axios.post(url, {
         name: userSignUp.name,

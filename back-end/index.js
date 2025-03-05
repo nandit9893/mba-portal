@@ -22,7 +22,7 @@ import errorMiddleware from "./middlewares/errorMiddleware.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
-import userProfileRoutes from "./routes/userProfileRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";// ✅ Fixed import
@@ -45,6 +45,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use('/public', express.static('public'));
+app.use("/uploads", express.static("uploads")); // Serve uploaded files
 
 // Routes
 app.use("/api/v1/test", testRoutes);
@@ -56,7 +57,7 @@ app.use('/payment', paymentRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/blogs", blogRoutes);
-app.use("/api/user/profile", userProfileRoutes);
+app.use("/api", profileRoutes);
 app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/settings", settingsRoutes);
 

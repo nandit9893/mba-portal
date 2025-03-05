@@ -41,17 +41,19 @@ export const registerController = async (req, res, next) => {
 
 
 //Logout Function (Invalidate Token)
-export const logout = async (req, res) => {
-    try {
-        const token = req.header("Authorization");
-        if (!token) return res.status(400).json({ message: "Token required" });
+export const logoutUser = async (req, res) => {
+  try {
+      // ✅ Option 1: Just send success response (For stateless JWT authentication)
+      res.status(200).json({ message: "User logged out successfully!" });
 
-        blacklistedTokens.push(token);
-        res.json({ message: "Logged out successfully" });
+      // ✅ Option 2: If using token blacklisting (Optional)
+      // Add token to a blacklist or remove from database
+      // await TokenBlacklist.create({ token: req.token });
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  } catch (error) {
+      console.error("Logout Error:", error);
+      res.status(500).json({ message: "Logout failed", error: error.message });
+  }
 };
 
 // Middleware to Check if Token is Blacklisted

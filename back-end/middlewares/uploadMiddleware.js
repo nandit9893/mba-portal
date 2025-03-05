@@ -1,28 +1,33 @@
-// uploadMiddleware.js
-import multer from 'multer';
-import path from 'path';
+import multer from "multer";
+import path from "path";
 
-// Storage configuration for multer
+// Storage configuration
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+    destination: function (req, file, cb) {
+        cb(null, "uploads/");  // Save files in 'uploads' folder
     },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique file name
+    }
 });
 
-// File filter to accept only certain file types
+// File filter
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|pdf/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    if (extname) {
-        return cb(null, true);
+    const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error("Only JPG, PNG, and PDF files are allowed"), false);
     }
-    cb(new Error("Only JPG, PNG, and PDF files are allowed"));
 };
 
-// Create the multer upload instance
-const upload = multer({ storage, fileFilter });
+const upload = multer({
+    storage,
+    fileFilter
+});
 
-export { upload };  // Named export
+// Multer middleware for profile uploads
+export const uploadProfileFiles = upload.fields([
+    { name: "profilePicture", maxCount: 1 },
+    { name: "resume", maxCount: 1 }
+]);

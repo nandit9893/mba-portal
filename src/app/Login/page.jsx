@@ -27,7 +27,7 @@ const LoginPage = () => {
       toast.error("Both fields are required");
       return;
     }
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/user/login`;
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/auth/login`;
     try {
       const response = await axios.post(url, {
         email: userLoginIn.email,
@@ -37,13 +37,10 @@ const LoginPage = () => {
       if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("authToken", token);
-        console.log("Token Stored:", localStorage.getItem("authToken"));
-  
         toast.success(response.data.message); 
         router.push("/");
       }
     } catch (error) {
-      console.log(error)
       const errorMessage = error.response?.data?.message || "Something went wrong!";
       toast.error(errorMessage);
     }

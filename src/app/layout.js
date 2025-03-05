@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify"; // ✅ Import ToastContainer
 import Footer from "./Components/Footer";
 import Navbar from "./Components/Navbar";
 
@@ -21,11 +22,11 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Navbar/>
+        <Navbar />
+        <ToastContainer position="top-right" autoClose={3000} /> {/* ✅ Add ToastContainer */}
         {children}
         <Footer />
       </body>

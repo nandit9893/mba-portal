@@ -38,7 +38,7 @@ const AdminLoginPage = () => {
         const token = response.data.token;
         localStorage.setItem("authToken", token);
         toast.success(response.data.message); 
-        router.push("/");
+        router.push("/AdminEmployer");
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Something went wrong!";
@@ -52,7 +52,7 @@ const AdminLoginPage = () => {
         <div className="flex flex-col gap-5 justify-center w-full sm:w-1/3 h-full border-[1px] border-white shadow-2xl p-8 rounded-2xl">
           <p className="text-white text-2xl font-semibold text-center">Admin Login</p>
           <div className="flex flex-col gap-3 w-full">
-              <input value={userLoginIn.email} required onChange={inputChangeHandler} name="email" type="email" placeholder="Username" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
+              <input value={userLoginIn.email} required onChange={inputChangeHandler} name="email" type="email" placeholder="Email" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
               <input value={userLoginIn.password} required onChange={inputChangeHandler} name="password" type="password" placeholder="Password" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
           </div>
           <div className="flex justify-start gap-3 items-center">

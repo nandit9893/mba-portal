@@ -9,6 +9,7 @@ import axios from "axios";
 const AdminRegisterPage = () => {
   const [userSignUp, setUserSignUp] = useState({
     name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -27,6 +28,10 @@ const AdminRegisterPage = () => {
   const registerUser = async () => {
     if (!userSignUp.name) {
       toast.error("Name is required");
+      return;
+    }
+    if (!userSignUp.username) {
+      toast.error("UserName is required");
       return;
     }
     if (!userSignUp.email) {
@@ -49,13 +54,14 @@ const AdminRegisterPage = () => {
     try {
       const response = await axios.post(url, {
         name: userSignUp.name,
+        username: userSignUp.username,
         email: userSignUp.email,
         password: userSignUp.password,
       });
 
       if (response.status === 201) {
         toast.success("Registration successful!");
-        setUserSignUp({ name: "", email: "", password: "", confirmPassword: "" });
+        setUserSignUp({ name: "", email: "", password: "", confirmPassword: "", username: "" });
         router.push("/AdminLogin");
       }
     } catch (error) {
@@ -70,6 +76,7 @@ const AdminRegisterPage = () => {
           <p className="text-white text-2xl font-semibold text-center">Admin Sign Up</p>
           <div className="flex flex-col gap-3 w-full">
             <input required onChange={inputChangeHandler} value={userSignUp.name} name="name" type="text" placeholder="Name" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
+            <input required onChange={inputChangeHandler} value={userSignUp.username} name="username" type="text" placeholder="User Name" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
             <input required onChange={inputChangeHandler} value={userSignUp.email} name="email" type="email" placeholder="Email / Phone" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
             <input required onChange={inputChangeHandler} value={userSignUp.password} name="password" type="password" placeholder="Password" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>
             <input required onChange={inputChangeHandler} value={userSignUp.confirmPassword} name="confirmPassword" type="password" placeholder="Confirm Password" className="text-white text-[16px] border-[1px] border-white rounded-xl px-4 py-3 bg-black w-full placeholder:text-white placeholder:text-lg"/>

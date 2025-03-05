@@ -27,7 +27,18 @@ export const createJob = (req, res, next) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
 
         try {
-            const { category, location, jobType, experience, jobDescription, skills, jobTitle, jobPackage, company, keyResponsibilities } = req.body;
+            const { 
+                category, 
+                location, 
+                jobType, 
+                experience, 
+                jobDescription, 
+                skills, 
+                jobTitle, 
+                jobPackage, 
+                company, 
+                keyResponsibilities
+            } = req.body;
 
             // Validate required fields
             if (!category || !location || !jobType || !experience || !jobDescription || !skills || !jobTitle || !company) {
@@ -57,8 +68,7 @@ export const createJob = (req, res, next) => {
                 company,
                 keyResponsibilities: keyResponsibilitiesArray,
                 companyLogo: imageUrl,
-                created_date: moment().utcOffset("+05:30").format("DD MMM, YYYY hh:mm a"),
-                updated_date: moment().utcOffset("+05:30").format("DD MMM, YYYY hh:mm a"),
+                createdAt: moment().utcOffset("+05:30").toDate(),
             });
 
             res.status(201).json({
@@ -71,6 +81,7 @@ export const createJob = (req, res, next) => {
         }
     });
 };
+
 
 
 
@@ -122,6 +133,7 @@ export const updateJob = (req, res) => {
         }
     });
 };
+
 
 export const listAllJobs = async (req, res, next) => {
     try {

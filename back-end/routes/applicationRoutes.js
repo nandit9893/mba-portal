@@ -1,11 +1,11 @@
 // routes/applicationRoutes.js
 import express from "express";
-import { applyJob } from "../controllers/applicationController.js";
+import { applyForJob } from "../controllers/applicationController.js";
 import { authenticateUser } from "../middlewares/applicationMiddleware.js";
 
 
 const router = express.Router();
 
-router.post("/apply", authenticateUser, applyJob);
+router.post("/applyForJob", authenticateUser, applyForJob);
 
 export default router;

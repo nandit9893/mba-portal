@@ -1,4 +1,3 @@
-// models/Application.js
 import mongoose from "mongoose";
 
 const ApplicationSchema = new mongoose.Schema(
@@ -15,4 +14,5 @@ const ApplicationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Application", ApplicationSchema);
+const Application = mongoose.model("Application", ApplicationSchema);
+export default Application;

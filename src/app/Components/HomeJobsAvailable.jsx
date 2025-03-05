@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { FaHotel, FaClock, FaMoneyBillWave, FaLocationArrow } from "react-icons/fa";
 import Link from "next/link";
 import { Bookmark } from "lucide-react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const HomeJobsAvailable = () => {
   const router = useRouter();
@@ -153,6 +154,21 @@ const HomeJobsAvailable = () => {
   const navigateToJobDetails = (id) => {
     router.push(`/JobDetails/${id}`);
   }
+
+  useEffect(() => {
+    const fetchLocationsJobsCompanyLocations = async () => {
+      const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/job/listAllJobs`;
+      try {
+        const response = await axios.get(url);
+        if (response.data.success) {
+            console.log(response.data.jobs)
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchLocationsJobsCompanyLocations();
+  }, []);
 
   return (
     <div className="bg-white sm:p-20 p-5 flex flex-col gap-4">

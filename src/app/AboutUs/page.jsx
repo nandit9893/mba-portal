@@ -17,8 +17,8 @@ const AboutUs = () => {
       <FaqSection />
       <BestSection />
       <NewsBlog />
-      <BlogManager/>
-      <CreateBlog/>
+      {/* <BlogManager/> */}
+      {/* <CreateBlog/> */}
     </div>
   );
 };

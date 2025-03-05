@@ -33,7 +33,6 @@ const AdminLoginPage = () => {
         email: userLoginIn.email,
         password: userLoginIn.password,
       });
-  
       if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("authToken", token);

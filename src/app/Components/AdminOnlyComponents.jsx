@@ -18,7 +18,7 @@ import {
   HiOutlineQuestionMarkCircle,
   HiOutlineUser,
 } from "react-icons/hi";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AdminMainContent from "../Components/AdminMainContent";
 import GeneralSettings from "../Components/GeneralSettings";
 import Tabs from "../Components/Tabs";
@@ -105,8 +105,22 @@ const AdminEmployerPage = () => {
     setActiveMenu(title);
   };
 
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 800) {
+        setIsCollapsed(true);
+      }
+    };
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+
   return (
-    <div className="px-5 py-2 flex-col min-h-screen w-full">
+    <div className="sm:px-5 sm:py-2 flex-col min-h-screen w-full">
       <div className="flex justify-between w-full gap-5 min-h-screen">
         <div
           className={`flex flex-col gap-5 rounded-2xl bg-gradient-to-tr from-slate-950 to-teal-500 ${
@@ -155,7 +169,10 @@ const AdminEmployerPage = () => {
                 </div>
               ))}
             </div>
-            <div onClick={()=>setShowMenu((prev)=> !prev)} className="flex items-center gap-5 cursor-pointer hover:bg-gradient-to-br from-teal-800 to-teal-500 py-2 px-5 rounded-2xl">
+            <div
+              onClick={() => setShowMenu((prev) => !prev)}
+              className="flex items-center gap-5 cursor-pointer hover:bg-gradient-to-br from-teal-800 to-teal-500 py-2 px-5 rounded-2xl"
+            >
               <span className="text-lg font-semibold text-white">
                 <HiOutlineQuestionMarkCircle />
               </span>

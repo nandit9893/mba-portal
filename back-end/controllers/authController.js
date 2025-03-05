@@ -94,7 +94,7 @@ export const loginController = async (req, res, next) => {
   const token = user.createJWT();
   res.status(200).json({
     success: true,
-    message: "Login SUccessfully",
+    message: "Login Successfully",
     user,
     token,
   });

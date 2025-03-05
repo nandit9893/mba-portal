@@ -185,7 +185,7 @@ const AdminMainContent = ({ isCollapsed }) => {
   }
   
   return (
-    <div className={`flex flex-col gap-3 min-h-screen transition-all duration-300 ease-in-out ${ isCollapsed ? "w-full" : "w-4/5"}`}>
+    <div className={`flex flex-col gap-3 min-h-screen transition-all duration-300 ease-in-out ${ isCollapsed ? "w-full" : "w-3/5 sm:w-4/5"}`}>
       <div className="flex justify-between items-center w-full p-5 bg-gradient-to-tr from-slate-950 to-teal-500 rounded-2xl">
         <div className="flex flex-col gap-1 items-center">
           <p className="text-white text-xl font-semibold">Welcome Nandit Sharma</p>
@@ -198,7 +198,7 @@ const AdminMainContent = ({ isCollapsed }) => {
         </div>
       </div>
       <p className="text-2xl text-black font-semibold p-2 text-center bg-gray-200 rounded-2xl">Dashboard</p>
-      <div className="flex justify-between gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 justify-between gap-5">
         <div className="flex flex-col rounded-xl p-3 items-center justify-center border-2 border-gray-300 bg-white w-44 shadow-2xl">
           <p className="text-2xl font-semibold text-black">Views</p>
           <div className="flex gap-2 w-full">
@@ -234,10 +234,10 @@ const AdminMainContent = ({ isCollapsed }) => {
             </div>
           </div>
           <div className="flex justify-between w-full">
-            <span className="text-3xl font-semibold text-black w-1/4">Name</span>
-            <span className="text-3xl font-semibold text-black w-1/4 text-center">Position</span>
-            <span className="text-3xl font-semibold text-black w-1/4 text-center">Salary</span>
-            <span className="text-3xl font-semibold text-black w-1/4 text-right">Mobile No</span>
+            <span className="sm:text-2xl md:text-3xl text-lg font-semibold text-black w-1/4">Name</span>
+            <span className="sm:text-2xl md:text-3xl text-lg font-semibold text-black w-1/4 text-center">Position</span>
+            <span className="sm:text-2xl md:text-3xl text-lg font-semibold text-black w-1/4 text-center">Salary</span>
+            <span className="sm:text-2xl md:text-3xl text-lg font-semibold text-black w-1/4 text-right">Mobile No</span>
           </div>
         </div>
         <hr className="w-full h-[2px] bg-black" />
@@ -245,10 +245,10 @@ const AdminMainContent = ({ isCollapsed }) => {
           {
             employeesData.slice(prevIndex, nextIndex).map((item) => (
               <div key={item._id} className={`flex justify-between w-full items-center px-2 py-2 rounded-2xl ${ item._id % 2 != 0 ? "bg-gray-200" : "bg-white"}`}>
-                <p className="text-xl font-medium text-black w-1/4">{item.name}</p>
-                <p className="text-xl font-medium text-black w-1/4 text-center">{item.position}</p>
-                <p className="text-xl font-medium text-black w-1/4 text-center">{item.salary}</p>
-                <p className="text-xl font-medium text-black w-1/4 text-right">{item.mobileNo}</p>
+                <p className="sm:text-2xl md:text-3xl text-lg font-normal sm:font-medium text-black w-1/4">{item.name}</p>
+                <p className="sm:text-2xl md:text-3xl text-lg font-normal sm:font-medium text-black w-1/4 text-center">{item.position}</p>
+                <p className="sm:text-2xl md:text-3xl text-lg font-normal sm:font-medium text-black w-1/4 text-center">{item.salary}</p>
+                <p className="sm:text-2xl md:text-3xl text-lg font-normal sm:font-medium text-black w-1/4 text-right">{item.mobileNo}</p>
               </div>
             ))
           }

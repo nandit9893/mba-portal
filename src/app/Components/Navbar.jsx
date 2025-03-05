@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FaMoon, FaSun, FaUser } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { usePathname } from "next/navigation";
+import axios from "axios";
 
 const Navbar = () => {
   const [menu, setMenu] = useState("home");
@@ -60,9 +61,9 @@ const Navbar = () => {
       <div className="hidden sm:flex gap-5 items-center">
         <Link href="/" className={`${menu === "home" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("home")}>Home</Link>
         <Link href="/Jobs" className={`${menu === "job" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("job")}>Jobs</Link>
-        <Link  href={`/JobDetails/${1}`}  className={`${menu === "job-details" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("job-details")}>Job Details</Link>
+        <Link href={`/JobDetails/${1}`}  className={`${menu === "job-details" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("job-details")}>Job Details</Link>
         <Link href="/AboutUs" className={`${menu === "about" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("about")}>About Us</Link>
-        <p onClick={() => setMenu("contact")} className={`${menu === "contact" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`}>Contact Us</p>
+        <Link href="/ContactUs" onClick={() => setMenu("contact")} className={`${menu === "contact" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`}>Contact Us</Link>
       </div>
       {/* <div className="hidden lg:flex items-center justify-center cursor-pointer p-2 hover:bg-gray-900 hover:shadow-[20px_0_50px_rgba(255,255,255,0.5),inset_20px_0_30px_rgba(255,255,255,0.3)] transition-colors duration-300 rounded-2xl">
         {
@@ -84,9 +85,9 @@ const Navbar = () => {
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 100 }}
                   className="flex flex-col gap-4 px-2 py-3 bg-gradient-to-tr from-slate-950 to-slate-600 rounded-2xl z-50 absolute right-4 w-56 top-16">
-                  <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(1)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 1 ? "translate-x-1" : ""}`}>nanditsharma063@gmail.com</Link>
+                  <Link onClick={()=>setViewProfile(false)} href="/Profile" onMouseEnter={() => setSlide(1)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 1 ? "translate-x-1" : ""}`}>nanditsharma063@gmail.com</Link>
                   <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(2)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 2 ? "translate-x-1" : ""}`}>MY APPLICATION</Link>
-                  <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(3)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 3 ? "translate-x-1" : ""}`}>EDIT RESUME</Link>
+                  <Link onClick={()=>setViewProfile(false)} href="/Resume" onMouseEnter={() => setSlide(3)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 3 ? "translate-x-1" : ""}`}>EDIT RESUME</Link>
                   <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(4)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 4 ? "translate-x-1" : ""}`}>PAYMENT</Link>
                   <Link onClick={()=>setViewProfile(false)} href="/" onMouseEnter={() => setSlide(5)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 5 ? "translate-x-1" : ""}`}>HELP CENTER</Link>
                   <Link onClick={logOutUser} href="/" onMouseEnter={() => setSlide(6)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 6 ? "translate-x-1" : ""}`}>LOGOUT</Link>

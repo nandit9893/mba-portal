@@ -3,8 +3,8 @@ import {
   loginController,
   registerController,
 } from "../controllers/authController.js";
-import { requestPasswordReset, resetPassword, logout, verifyToken } from '../controllers/authController.js';
-
+import { requestPasswordReset, resetPassword, logoutUser, verifyToken } from '../controllers/authController.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
 
 import rateLimit from "express-rate-limit";
 
@@ -40,7 +40,7 @@ router.post('/request-password-reset', requestPasswordReset);
 // Reset Password (POST)
 router.post('/reset-password', resetPassword);
 
-router.post('/logout', verifyToken, logout); // Protect logout route
+router.post('/logout', authMiddleware, logoutUser); // Protect logout route
 
 
 //export

@@ -10,7 +10,7 @@ import cors from "cors";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
-
+import path from "path";
 // File imports
 import connectDB from "./config/db.js";
 import testRoutes from "./routes/testRoutes.js";
@@ -46,12 +46,13 @@ app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use('/public', express.static('public'));
 app.use("/uploads", express.static("uploads")); // Serve uploaded files
-
+app.use("/uploads", express.static(path.join("public", "uploads")));
 // Routes
 app.use("/api/v1/test", testRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
-app.use("/api/v1/job", jobRoutes);
+
+app.use("/api/v1/job", jobRoutes); 
 app.use("/api/admin", adminRoutes);
 app.use('/payment', paymentRoutes);
 app.use('/api/resumes', resumeRoutes);

@@ -300,27 +300,3 @@ export const filterJobs = async (req, res) => {
     }
 };
 
-export const listJobByCategory = async (req, res, next) => {
-    try {
-        const { category } = req.params; // Extract category from URL params
-
-        // Find jobs by category
-        const jobs = await Job.find({ category });
-
-        // Check if jobs exist
-        if (!jobs || jobs.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "No jobs found in this category"
-            });
-        }
-
-        // Return jobs in the specified category
-        res.status(200).json({
-            success: true,
-            jobs
-        });
-    } catch (error) {
-        next(error);
-    }
-};

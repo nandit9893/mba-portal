@@ -90,3 +90,22 @@ console.log(job)
         }
     });
 };
+
+
+export const listAllApplications = async (req, res) => {
+  try {
+      const applications = await Application.find()
+          .populate({
+              path: "candidate",
+              select: "name email -password" // Explicitly exclude the password
+          })
+          .populate("job", "title company"); // Populate job details
+
+      res.status(200).json({
+          success: true,
+          applications
+      });
+  } catch (error) {
+      res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+};

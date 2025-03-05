@@ -3,11 +3,16 @@ import path from "path";
 import multer from "multer";
 import moment from "moment";
 import Job from "../models/job.js";
-
+import fs from "fs";
 // Multer storage configuration
+// Multer storage configuration
+const uploadPath = path.join("public", "uploads");
+
+// Ensure the upload directory exists
+fs.mkdirSync(uploadPath, { recursive: true });
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const uploadPath = path.join("public", "uploads");
         cb(null, uploadPath);
     },
     filename: function (req, file, cb) {
@@ -25,14 +30,17 @@ export const createJob = (req, res, next) => {
             const { category, location, jobType, experience, jobDescription, skills, jobTitle, jobPackage, company, keyResponsibilities } = req.body;
 
             // Validate required fields
-            if (!category || !location || !jobType || !experience || !jobDescription || !skills || !jobTitle || !company ) {
+            if (!category || !location || !jobType || !experience || !jobDescription || !skills || !jobTitle || !company) {
                 return res.status(400).json({ success: false, message: "All required fields must be filled" });
             }
 
             // Construct image URL if file is uploaded
-            const imageUrl = req.file ? `${req.protocol}://${req.get("host")}/public/uploads/${req.file.filename}` : null;
+            let imageUrl = null;
+            if (req.file) {
+                imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+            }
 
-            // Convert `skills` and `keyResponsibilities` to arrays if they're JSON strings
+            // Convert `skills` and `keyResponsibilities` to arrays if they are JSON strings
             const skillsArray = Array.isArray(skills) ? skills : JSON.parse(skills || "[]");
             const keyResponsibilitiesArray = Array.isArray(keyResponsibilities) ? keyResponsibilities : JSON.parse(keyResponsibilities || "[]");
 
@@ -47,7 +55,6 @@ export const createJob = (req, res, next) => {
                 jobTitle,
                 jobPackage,
                 company,
-             
                 keyResponsibilities: keyResponsibilitiesArray,
                 companyLogo: imageUrl,
                 created_date: moment().utcOffset("+05:30").format("DD MMM, YYYY hh:mm a"),
@@ -64,6 +71,7 @@ export const createJob = (req, res, next) => {
         }
     });
 };
+
 
 
 export const updateJob = (req, res) => {
@@ -187,32 +195,34 @@ export const deleteJobById = async (req, res, next) => {
         next(error);
     }
 };
-
 export const searchJobs = async (req, res, next) => {
     try {
         const { jobTitle, location, experience, jobPackage, category, jobType } = req.query;
 
         let filter = {};
 
-        if (jobTitle) filter.jobTitle = { $regex: `.*${jobTitle.trim()}.*`, $options: "i" };
-        if (location) filter.location = { $regex: `.*${location.trim()}.*`, $options: "i" };
-        if (experience) filter.experience = { $regex: `.*${experience.trim()}.*`, $options: "i" };
-        if (category) filter.category = { $regex: `.*${category.trim()}.*`, $options: "i" };
-        if (jobType) filter.jobType = { $regex: `.*${jobType.trim()}.*`, $options: "i" };
+        // 🔹 Apply text-based filters (case-insensitive)
+        if (jobTitle) filter.jobTitle = { $regex: `^${jobTitle.trim()}$`, $options: "i" };
+        if (location) filter.location = { $regex: `^${location.trim()}$`, $options: "i" };
+        if (experience) filter.experience = { $regex: `^${experience.trim()}$`, $options: "i" };
+        if (category) filter.category = { $regex: `^${category.trim()}$`, $options: "i" };
+        if (jobType) filter.jobType = { $regex: `^${jobType.trim()}$`, $options: "i" };
 
-        // ✅ Filter salary range
+        // ✅ Correct Salary Range Filtering
         if (jobPackage) {
-            const [minSalary, maxSalary] = jobPackage.split("-").map(Number);
-            if (!isNaN(minSalary) && !isNaN(maxSalary)) {
-                filter.jobPackage = { $regex: `^(${minSalary}-${maxSalary})$`, $options: "i" };
+            const salaryRange = jobPackage.split("-").map(Number);
+            if (salaryRange.length === 2 && !isNaN(salaryRange[0]) && !isNaN(salaryRange[1])) {
+                filter.jobPackage = { $gte: salaryRange[0], $lte: salaryRange[1] };
+            } else {
+                console.log("❌ Invalid salary range format:", jobPackage);
             }
         }
 
-        console.log(" Filter Used:", JSON.stringify(filter, null, 2));
+        console.log("🔎 Filter Used:", JSON.stringify(filter, null, 2));
 
         const jobs = await Job.find(filter);
 
-        console.log(" Jobs Found:", jobs.length ? jobs : "No jobs found");
+        console.log("✅ Jobs Found:", jobs.length ? jobs : "No jobs found");
 
         if (!jobs.length) {
             return res.status(404).json({ success: false, message: "No jobs found" });
@@ -220,10 +230,11 @@ export const searchJobs = async (req, res, next) => {
 
         res.status(200).json({ success: true, jobs });
     } catch (error) {
-        console.error(" Error:", error);
+        console.error("❌ Error:", error);
         next(error);
     }
 };
+
 
 
 export const filterJobs = async (req, res) => {
@@ -289,3 +300,27 @@ export const filterJobs = async (req, res) => {
     }
 };
 
+export const listJobByCategory = async (req, res, next) => {
+    try {
+        const { category } = req.params; // Extract category from URL params
+
+        // Find jobs by category
+        const jobs = await Job.find({ category });
+
+        // Check if jobs exist
+        if (!jobs || jobs.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No jobs found in this category"
+            });
+        }
+
+        // Return jobs in the specified category
+        res.status(200).json({
+            success: true,
+            jobs
+        });
+    } catch (error) {
+        next(error);
+    }
+};

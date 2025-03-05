@@ -147,7 +147,7 @@ const HeroSection = () => {
         {
           jobLists ? 
           (
-            <div className="absolute left-2 top-[85px] w-56 bg-white p-2 rounded-xl overflow-y-auto h-auto">
+            <div className="absolute left-7 sm:left-2 top-[68px] sm:top-[85px] w-56 bg-white p-2 rounded-xl overflow-y-auto h-auto">
               {
                 jobtitleArray.map((title, index) => (
                   <p key={index} onClick={() => setJobInput(title)}  className="text-black text-lg py-2 px-3 transition-colors duration-300 cursor-pointer hover:text-white hover:bg-black bg-white rounded-xl">{title}</p>
@@ -159,7 +159,7 @@ const HeroSection = () => {
         {
           companyLists ? 
           (
-            <div className="absolute left-[245px] top-[85px] w-56 bg-white p-2 rounded-xl overflow-y-auto h-auto">
+            <div className="absolute left-8 sm:left-[245px] top-36 sm:top-[85px] w-56 bg-white p-2 rounded-xl overflow-y-auto h-auto">
               {
                 companyArray.map((title, index) => (
                   <p key={index} onClick={() => setCompanyInput(title)}  className="text-black text-lg py-2 px-3 transition-colors duration-300 cursor-pointer hover:text-white hover:bg-black bg-white rounded-xl">{title}</p>
@@ -171,7 +171,7 @@ const HeroSection = () => {
          {
           locationLists ? 
           (
-            <div className="absolute left-[475px] top-[85px] w-56 bg-white p-2 rounded-xl overflow-y-auto h-auto">
+            <div className="absolute left-7 sm:left-[475px] top-56 sm:top-[85px] w-56 bg-white p-2 rounded-xl overflow-y-auto h-auto">
               {
                 locationArray.map((title, index) => (
                   <p key={index} onClick={() => setLocationInput(title)}  className="text-black text-lg py-2 px-3 transition-colors duration-300 cursor-pointer hover:text-white hover:bg-black bg-white rounded-xl">{title}</p>
@@ -183,7 +183,7 @@ const HeroSection = () => {
          {
           categoryLists ? 
           (
-            <div className="absolute right-48 top-[85px] w-56 bg-white p-2 rounded-xl overflow-y-auto h-auto">
+            <div className="absolute right-8 sm:right-48 top-72 sm:top-[85px] w-56 bg-white p-2 rounded-xl overflow-y-auto h-auto">
               {
                 categoryArray.map((title, index) => (
                   <p key={index} onClick={() => setCategoryInput(title)}  className="text-black text-lg py-2 px-3 transition-colors duration-300 cursor-pointer hover:text-white hover:bg-black bg-white rounded-xl">{title}</p>

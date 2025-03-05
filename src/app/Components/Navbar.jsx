@@ -65,11 +65,11 @@ const Navbar = () => {
         <Link href="/AboutUs" className={`${menu === "about" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("about")}>About Us</Link>
         <p onClick={() => setMenu("contact")} className={`${menu === "contact" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`}>Contact Us</p>
       </div>
-      <div className="hidden lg:flex items-center justify-center cursor-pointer p-2 hover:bg-gray-900 hover:shadow-[20px_0_50px_rgba(255,255,255,0.5),inset_20px_0_30px_rgba(255,255,255,0.3)] transition-colors duration-300 rounded-2xl">
+      {/* <div className="hidden lg:flex items-center justify-center cursor-pointer p-2 hover:bg-gray-900 hover:shadow-[20px_0_50px_rgba(255,255,255,0.5),inset_20px_0_30px_rgba(255,255,255,0.3)] transition-colors duration-300 rounded-2xl">
         {
           toggle === "sun" ? <FaSun onClick={()=>setToggle("moon")} className="text-white text-xl drop-shadow-[0_0_30px_rgba(255,255,255,1)]" /> : <FaMoon onClick={()=>setToggle("sun")} className="text-white text-xl drop-shadow-[0_0_30px_rgba(255,255,255,1)]" />
         }
-      </div>
+      </div> */}
       {
         tokenFromLocalStorage ? 
         (

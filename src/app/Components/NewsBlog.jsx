@@ -17,7 +17,7 @@ const NewsBlog = () => {
         <div className="flex flex-col sm:flex-col md:flex-col lg:flex-row justify-between gap-5 w-full items-center">
           <div className="flex flex-col md:flex-row lg:flex-col gap-5 w-full sm:w-full md:w-full lg:w-1/2 md:items-center">
             <div className="relative">
-              <Image src="/nb_img_1.png" width={700} height={500} alt="Picture of the author" className="w-2xl rounded-2xl h-[450px] md:h-[350px] lg:h-[450px]"/>              
+              <Image src="/newsBlog1.avif" width={700} height={500} alt="Picture of the author" className="w-2xl rounded-2xl h-[450px] md:h-[350px] lg:h-[450px]"/>              
               <p className="absolute top-8 left-6 bg-[#309689] text-white px-5 py-1 text-lg rounded-2xl">News</p>
             </div>
             <div className="flex flex-col gap-2">
@@ -31,7 +31,7 @@ const NewsBlog = () => {
           </div>
           <div className="flex flex-col md:flex-row lg:flex-col gap-5 w-full sm:w-full md:w-full lg:w-1/2 md:items-center">
             <div className="relative">
-              <Image src="/nb_img_2.png" width={700} height={500} alt="Picture of the author" className="w-2xl rounded-2xl h-[450px] md:h-[350px] lg:h-[450px]"/>              
+              <Image src="/newsBlog2.avif" width={700} height={500} alt="Picture of the author" className="w-2xl rounded-2xl h-[450px] md:h-[350px] lg:h-[450px]"/>              
               <p className="absolute top-8 left-6 bg-[#309689] text-white px-5 py-1 text-lg rounded-2xl">News</p>
             </div>
             <div className="flex flex-col gap-2">

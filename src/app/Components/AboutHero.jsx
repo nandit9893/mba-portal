@@ -21,9 +21,9 @@ const AboutHero = () => {
 
         {/* Right Image */}
         <div className="lg:w-1/2 flex justify-center">
-          <Image width ={500} height={500}
+          <Image width ={600} height={600}
             className="w-full max-w-md md:max-w-lg lg:max-w-full h-auto rounded-2xl shadow-lg"
-            src="/home_about_bg.png"
+            src="/About.avif"
             alt="Career Opportunities"
           />
         </div>

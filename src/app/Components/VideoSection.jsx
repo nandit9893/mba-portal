@@ -22,7 +22,7 @@ const VideoSection = () => {
   return (
     <section
       className="relative w-full h-[500px] sm:h-[550px] md:h-[600px] lg:h-[632px] bg-cover bg-center flex items-center justify-center text-center text-white px-4"
-      style={{ backgroundImage: "url('./home_about_bg.png')" }}
+      style={{ backgroundImage: "url('./VideoS.avif')" }}
     >
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>

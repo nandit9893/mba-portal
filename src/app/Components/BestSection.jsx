@@ -8,15 +8,15 @@ const BestSection = () => {
       <div className="grid grid-cols-2 gap-4 w-full md:w-1/2">
         <div
           className="h-40 sm:h-52 md:h-64 bg-gray-300 rounded-xl bg-cover bg-center"
-          style={{ backgroundImage: "url('/home_about_bg.png')" }}
+          style={{ backgroundImage: "url('/bestSec_one.avif')" }}
         ></div>
         <div
           className="h-40 sm:h-52 md:h-64 bg-gray-300 rounded-xl bg-cover bg-center"
-          style={{ backgroundImage: "url('/nb_img_1.png')" }}
+          style={{ backgroundImage: "url('/best_sec.avif')" }}
         ></div>
         <div
           className="h-40 sm:h-52 md:h-64 bg-gray-300 rounded-xl col-span-2 bg-cover bg-center"
-          style={{ backgroundImage: "url('/nb_img_2.png')" }}
+          style={{ backgroundImage: "url('/best_copy.avif')" }}
         ></div>
       </div>
 

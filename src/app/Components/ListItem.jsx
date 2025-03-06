@@ -74,6 +74,7 @@ export default function JobApplications() {
   const [search, setSearch] = useState("");
   const [sortedBy, setSortedBy] = useState(null);
   const [isAscending, setIsAscending] = useState(true);
+  const [applicationData, setApplicationData] = useState(null);
 
   const sortData = (key) => {
     setIsAscending(sortedBy === key ? !isAscending : true);
@@ -89,7 +90,8 @@ export default function JobApplications() {
           headers: { Authorization: `Bearer ${token}` }
         });
         
-        if (response.data.success) {console.log(response.data)
+        if (response.data.success) {console.log(response.data.applications)
+          setApplicationData(response.data.applications)
         }
       } catch (error) {
         console.log(error);

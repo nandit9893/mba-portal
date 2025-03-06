@@ -7,9 +7,11 @@ import Link from "next/link";
 import { FaMoon, FaSun, FaUser } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
+  const router = useRouter();
   const [menu, setMenu] = useState("home");
   const [toggle, setToggle] = useState("sun");
   const [openMenus, setOpenMenus] = useState(false);
@@ -52,18 +54,16 @@ const Navbar = () => {
       toast.error("You are not logged in!");
       return;
     }
-    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/auth/logout`;
+    const baseURL = process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL || "http://localhost:5000";
+    const url = `${baseURL}/api/v1/auth/logout`;
     try {
       const response = await axios.post(url, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
-      if (response.data.success) {
-        localStorage.removeItem("authToken");
+  
+      localStorage.removeItem("authToken");
         toast.success(response.data.message || "Logged out successfully");
-        router.push("/Login");
-      }
+        router.replace("/");
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Logout failed!";
       toast.error(errorMessage);
@@ -111,7 +111,7 @@ const Navbar = () => {
                   <Link onClick={()=>setViewProfile(false)} href="/Resume" onMouseEnter={() => setSlide(3)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 3 ? "translate-x-1" : ""}`}>EDIT RESUME</Link>
                   <Link onClick={()=>setViewProfile(false)} href="/Payment" onMouseEnter={() => setSlide(4)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 4 ? "translate-x-1" : ""}`}>PAYMENT</Link>
                   <Link onClick={()=>setViewProfile(false)} href="/HelpSupport" onMouseEnter={() => setSlide(5)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 5 ? "translate-x-1" : ""}`}>HELP CENTER</Link>
-                  <Link onClick={logOutUser} href="/" onMouseEnter={() => setSlide(6)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 6 ? "translate-x-1" : ""}`}>LOGOUT</Link>
+                  <p onClick={logOutUser} onMouseEnter={() => setSlide(6)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 6 ? "translate-x-1" : ""}`}>LOGOUT</p>
                 </motion.div>
               )
             }

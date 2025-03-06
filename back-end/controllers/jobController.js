@@ -48,7 +48,8 @@ export const createJob = (req, res, next) => {
             // Construct image URL if file is uploaded
             let imageUrl = null;
             if (req.file) {
-                imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+                imageUrl = `/uploads/${req.file.filename}`;
+
             }
 
             // Convert `skills` and `keyResponsibilities` to arrays if they are JSON strings
@@ -135,6 +136,7 @@ export const updateJob = (req, res) => {
 };
 
 
+
 export const listAllJobs = async (req, res, next) => {
     try {
         // Fetch all jobs from the database
@@ -148,10 +150,17 @@ export const listAllJobs = async (req, res, next) => {
             });
         }
 
+        // Modify jobs array to include full image URL if necessary
+        const jobsWithImages = jobs.map(job => ({
+            ...job._doc,
+            companyLogo: job.companyLogo ? `${req.protocol}://${req.get("host")}${job.companyLogo.startsWith("/") ? job.companyLogo : "/" + job.companyLogo}` : null
+
+        }));
+
         // Return the list of jobs
         res.status(200).json({
             success: true,
-            jobs
+            jobs: jobsWithImages
         });
     } catch (error) {
         next(error);
@@ -182,6 +191,7 @@ export const listJobById = async (req, res, next) => {
         next(error);
     }
 };
+
 
 export const deleteJobById = async (req, res, next) => {
     try {

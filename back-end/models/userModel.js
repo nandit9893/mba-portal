@@ -49,8 +49,11 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
 
 //JSON WEBTOKEN
 userSchema.methods.createJWT = function () {
-  return JWT.sign({ userId: this._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
+  return JWT.sign(
+    { userId: this._id, email: this.email }, // ✅ Include email in token
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+  );
 };
+
 export default mongoose.model("User", userSchema);

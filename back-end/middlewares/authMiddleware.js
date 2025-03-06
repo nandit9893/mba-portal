@@ -1,9 +1,14 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js'; // Use default import to match the export
 import Admin from '../models/Admin.js'; // Ensure you have an Admin model
+import userModel from "../models/userModel.js";
 
 
 import JWT from "jsonwebtoken";
+
+
+
+
 
 export const userAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -72,25 +77,34 @@ export const protectUser = async (req, res, next) => {
 };
 
 export const authenticateUser = async (req, res, next) => {
-    const token = req.header("Authorization")?.split(" ")[1]; // Extract token
-
-    if (!token) return res.status(401).json({ message: "Access Denied, No Token Provided" });
-
     try {
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Decoded Token:", verified); // ✅ Debugging step
+        const token = req.headers.authorization?.split(" ")[1];
 
-        req.user = { userId: verified.userId }; // ✅ Ensure `userId` is stored correctly
-
-        if (!req.user.userId) {
-            return res.status(400).json({ success: false, message: "User ID not found in token" });
+        if (!token) {
+            return res.status(401).json({ success: false, message: "No token provided" });
         }
 
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("Decoded Token:", decoded); // Debug log
+
+        if (!decoded || !decoded.userId) {
+            return res.status(401).json({ success: false, message: "Invalid token" });
+        }
+
+        req.user = await userModel.findById(decoded.userId).select("-password");
+        if (!req.user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        console.log("Authenticated User:", req.user); // Debug log
         next();
-    } catch (err) {
-        res.status(400).json({ message: "Invalid Token" });
+    } catch (error) {
+        console.error("Authentication Error:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
     }
 };
+
+
 
 
 

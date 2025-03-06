@@ -1,16 +1,14 @@
-
 import path from "path";
 import multer from "multer";
 import moment from "moment";
 import Job from "../models/job.js";
 import fs from "fs";
-// Multer storage configuration
-// Multer storage configuration
-const uploadPath = path.join("public", "uploads");
 
-// Ensure the upload directory exists
+// Ensure upload directory exists
+const uploadPath = path.join("public", "uploads");
 fs.mkdirSync(uploadPath, { recursive: true });
 
+// Multer storage setup
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, uploadPath);
@@ -22,118 +20,136 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-export const createJob = (req, res, next) => {
-    upload.single("companyLogo")(req, res, async function (err) {
-        if (err) return res.status(500).json({ success: false, error: err.message });
-
-        try {
-            const { 
-                category, 
-                location, 
-                jobType, 
-                experience, 
-                jobDescription, 
-                skills, 
-                jobTitle, 
-                jobPackage, 
-                company, 
-                keyResponsibilities
-            } = req.body;
-
-            // Validate required fields
-            if (!category || !location || !jobType || !experience || !jobDescription || !skills || !jobTitle || !company) {
-                return res.status(400).json({ success: false, message: "All required fields must be filled" });
-            }
-
-            // Construct image URL if file is uploaded
-            let imageUrl = null;
-            if (req.file) {
-                imageUrl = `/uploads/${req.file.filename}`;
-
-            }
-
-            // Convert `skills` and `keyResponsibilities` to arrays if they are JSON strings
-            const skillsArray = Array.isArray(skills) ? skills : JSON.parse(skills || "[]");
-            const keyResponsibilitiesArray = Array.isArray(keyResponsibilities) ? keyResponsibilities : JSON.parse(keyResponsibilities || "[]");
-
-            // Create a new job listing
-            const newJob = await Job.create({
-                category,
-                location,
-                jobType,
-                experience,
-                jobDescription,
-                skills: skillsArray,
-                jobTitle,
-                jobPackage,
-                company,
-                keyResponsibilities: keyResponsibilitiesArray,
-                companyLogo: imageUrl,
-                createdAt: moment().utcOffset("+05:30").toDate(),
-            });
-
-            res.status(201).json({
-                success: true,
-                message: "Job created successfully",
-                job: newJob
-            });
-        } catch (error) {
-            next(error);
+export const createJob = async (req, res, next) => {
+    try {
+        // Ensure admin is authenticated (Handled by `protectAdmin`)
+        if (!req.admin) {
+            return res.status(401).json({ success: false, message: "Not authorized" });
         }
-    });
+
+        // Handle file upload
+        upload.single("companyLogo")(req, res, async function (err) {
+            if (err) return res.status(500).json({ success: false, error: err.message });
+
+            try {
+                const { 
+                    category, location, jobType, experience, 
+                    jobDescription, skills, jobTitle, jobPackage, 
+                    company, keyResponsibilities 
+                } = req.body;
+
+                // Validate required fields
+                if (!category || !location || !jobType || !experience || !jobDescription || !skills || !jobTitle || !company) {
+                    return res.status(400).json({ success: false, message: "All required fields must be filled" });
+                }
+
+                // Construct image URL if file is uploaded
+                let imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+                // Convert `skills` and `keyResponsibilities` to arrays
+                const skillsArray = Array.isArray(skills) ? skills : JSON.parse(skills || "[]");
+                const keyResponsibilitiesArray = Array.isArray(keyResponsibilities) ? keyResponsibilities : JSON.parse(keyResponsibilities || "[]");
+
+                // Create a new job listing
+                const newJob = await Job.create({
+                    category,
+                    location,
+                    jobType,
+                    experience,
+                    jobDescription,
+                    skills: skillsArray,
+                    jobTitle,
+                    jobPackage,
+                    company,
+                    keyResponsibilities: keyResponsibilitiesArray,
+                    companyLogo: imageUrl,
+                    createdAt: moment().utcOffset("+05:30").toDate(),
+                    createdBy: req.admin._id // Store the admin's ID who created the job
+                });
+
+                res.status(201).json({
+                    success: true,
+                    message: "Job created successfully",
+                    job: newJob
+                });
+            } catch (error) {
+                next(error);
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 
 
 
-export const updateJob = (req, res) => {
-    upload.single("companyLogo")(req, res, async function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-
-        try {
-            const { jobId } = req.params; // Assuming jobId is passed in URL params
-            const body = req.body;
-            console.log("Update Request Body:", body);
-
-            // Find the existing job
-            const existingJob = await Job.findById(jobId);
-            if (!existingJob) {
-                return res.status(404).json({ success: false, message: "Job not found" });
-            }
-
-            // Construct image URL if a new file is uploaded, else retain the old one
-            const imageUrl = req.file 
-                ? `${req.protocol}://${req.get("host")}/public/uploads/${req.file.filename}`
-                : existingJob.companyLogo;
-
-            // Convert `skills` and `keyResponsibilities` to arrays if they're JSON strings
-            const skillsArray = Array.isArray(body.skills) ? body.skills : JSON.parse(body.skills || "[]");
-            const keyResponsibilitiesArray = Array.isArray(body.keyResponsibilities) ? body.keyResponsibilities : JSON.parse(body.keyResponsibilities || "[]");
-
-            // Update job fields
-            existingJob.category = body.category || existingJob.category;
-            existingJob.location = body.location || existingJob.location;
-            existingJob.jobType = body.jobType || existingJob.jobType;
-            existingJob.experience = body.experience || existingJob.experience;
-            existingJob.jobDescription = body.jobDescription || existingJob.jobDescription;
-            existingJob.skills = skillsArray.length > 0 ? skillsArray : existingJob.skills;
-            existingJob.jobTitle = body.jobTitle || existingJob.jobTitle;
-            existingJob.jobPackage = body.jobPackage || existingJob.jobPackage;
-            existingJob.company = body.company || existingJob.company;
-            existingJob.keyResponsibilities = keyResponsibilitiesArray.length > 0 ? keyResponsibilitiesArray : existingJob.keyResponsibilities;
-            existingJob.companyLogo = imageUrl;
-            existingJob.updated_date = moment().utcOffset("+05:30").format("DD MMM, YYYY hh:mm a");
-
-            // Save updated job
-            await existingJob.save();
-
-            res.json({ success: true, message: "Job updated successfully", job: existingJob });
-        } catch (error) {
-            console.error("Error in updateJob:", error);
-            res.status(500).json({ error: error.message || "Failed to update job" });
+export const updateJob = async (req, res, next) => {
+    try {
+        // Ensure admin is authenticated (Handled by `protectAdmin`)
+        if (!req.admin) {
+            return res.status(401).json({ success: false, message: "Not authorized" });
         }
-    });
+
+        // Handle file upload
+        upload.single("companyLogo")(req, res, async function (err) {
+            if (err) return res.status(500).json({ success: false, error: err.message });
+
+            try {
+                const { jobId } = req.params; // Job ID from URL params
+                const body = req.body;
+
+                // Find the existing job
+                const existingJob = await Job.findById(jobId);
+                if (!existingJob) {
+                    return res.status(404).json({ success: false, message: "Job not found" });
+                }
+
+                // Construct image URL if a new file is uploaded, else retain the old one
+                let imageUrl = existingJob.companyLogo;
+                if (req.file) {
+                    imageUrl = `/uploads/${req.file.filename}`;
+                }
+
+                // Convert `skills` and `keyResponsibilities` to arrays if they are JSON strings
+                const skillsArray = Array.isArray(body.skills) ? body.skills : JSON.parse(body.skills || "[]");
+                const keyResponsibilitiesArray = Array.isArray(body.keyResponsibilities)
+                    ? body.keyResponsibilities
+                    : JSON.parse(body.keyResponsibilities || "[]");
+
+                // Update job fields
+                existingJob.category = body.category || existingJob.category;
+                existingJob.location = body.location || existingJob.location;
+                existingJob.jobType = body.jobType || existingJob.jobType;
+                existingJob.experience = body.experience || existingJob.experience;
+                existingJob.jobDescription = body.jobDescription || existingJob.jobDescription;
+                existingJob.skills = skillsArray.length > 0 ? skillsArray : existingJob.skills;
+                existingJob.jobTitle = body.jobTitle || existingJob.jobTitle;
+                existingJob.jobPackage = body.jobPackage || existingJob.jobPackage;
+                existingJob.company = body.company || existingJob.company;
+                existingJob.keyResponsibilities = keyResponsibilitiesArray.length > 0
+                    ? keyResponsibilitiesArray
+                    : existingJob.keyResponsibilities;
+                existingJob.companyLogo = imageUrl;
+                existingJob.updated_date = moment().utcOffset("+05:30").toDate();
+
+                // Save updated job
+                await existingJob.save();
+
+                res.json({
+                    success: true,
+                    message: "Job updated successfully",
+                    job: existingJob
+                });
+            } catch (error) {
+                next(error);
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
 };
+
 
 
 
@@ -322,3 +338,21 @@ export const filterJobs = async (req, res) => {
     }
 };
 
+export const listMyJobs = async (req, res) => {
+    try {
+        // Ensure admin is authenticated (Handled by `protectAdmin` middleware)
+        if (!req.admin) {
+            return res.status(401).json({ success: false, message: "Not authorized" });
+        }
+
+        // Fetch jobs uploaded by the authenticated admin
+        const jobs = await Job.find({ createdBy: req.admin._id });
+
+        res.status(200).json({
+            success: true,
+            jobs,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message || "Failed to fetch jobs" });
+    }
+};

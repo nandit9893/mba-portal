@@ -1,8 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js'; // Use default import to match the export
 import Admin from '../models/Admin.js'; // Ensure you have an Admin model
-import userModel from "../models/userModel.js";
-
 
 import JWT from "jsonwebtoken";
 
@@ -27,29 +25,37 @@ export const userAuth = async (req, res, next) => {
 
 
 
-// *Admin Authentication Middleware*
 export const protectAdmin = async (req, res, next) => {
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
         try {
-            token = req.headers.authorization.split(' ')[1];
+            token = req.headers.authorization.split(" ")[1];
+
+            // Decode token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.admin = await Admin.findById(decoded.id).select('-password');
+            console.log("Decoded Token:", decoded); // ✅ Debugging: Check token payload
+
+            // Ensure correct field (`_id` vs. `adminId`)
+            req.admin = await Admin.findById(decoded._id || decoded.adminId).select("-password");
 
             if (!req.admin) {
-                return res.status(401).json({ success: false, message: 'Admin not found' });
+                return res.status(401).json({ success: false, message: "Admin not found in database" });
             }
+
+            console.log("Authenticated Admin:", req.admin); // ✅ Debugging: Check if admin is found
 
             next();
         } catch (error) {
-            res.status(401).json({ error: 'Not authorized, token failed' });
+            console.error("JWT Verification Error:", error.message); // ✅ Debugging: Log error
+            return res.status(401).json({ success: false, message: "Invalid token" });
         }
-    }
-
-    if (!token) {
-        res.status(401).json({ error: 'Not authorized, no token' });
+    } else {
+        return res.status(401).json({ success: false, message: "No token provided" });
     }
 };
+
+
 
 // *Protect User Middleware (Alternative Authentication)*
 export const protectUser = async (req, res, next) => {

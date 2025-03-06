@@ -54,21 +54,24 @@ const Navbar = () => {
       toast.error("You are not logged in!");
       return;
     }
-    const baseURL = process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL || "http://localhost:5000";
-    const url = `${baseURL}/api/v1/auth/logout`;
+    localStorage.removeItem("authToken");
+    setTokenFromLocalStorage(false);
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/auth/logout`;
     try {
       const response = await axios.post(url, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-  
-      localStorage.removeItem("authToken");
-        toast.success(response.data.message || "Logged out successfully");
+      toast.success(response.data.message || "Logged out successfully");
+      setTimeout(() => {
         router.replace("/");
+      }, 100);
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Logout failed!";
       toast.error(errorMessage);
     }
   };
+  
+  
 
   return (
     <div className="flex justify-between items-center px-3 py-5 sm:px-2 sm:py-4 lg:p-6 lg:px-20 bg-black overflow-x-hidden">

@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js'; // Use default import to match the export
 import Admin from '../models/Admin.js'; // Ensure you have an Admin model
 
+
 import JWT from "jsonwebtoken";
 
 export const userAuth = async (req, res, next) => {

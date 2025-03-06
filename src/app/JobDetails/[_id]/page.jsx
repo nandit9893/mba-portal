@@ -10,6 +10,12 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 const JobDetailsPage = () => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    message: "",
+  });
   const router = useRouter();
   const { _id } = useParams();
   const [specificJob, setSpecificJob] = useState(null);
@@ -18,6 +24,14 @@ const JobDetailsPage = () => {
 
   const navigateToJobDetails = (id) => {
     router.push(`/JobDetails/${id}`);
+  };
+
+  const inputChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   useEffect(() => {
@@ -43,6 +57,45 @@ const JobDetailsPage = () => {
 
     fetchJobDetails();
   }, [_id]);
+
+  const submitHandler = async (event) => {
+    event.preventDefault();
+
+    if (!formData.fullName) {
+      toast.error("Name is required");
+      return;
+    }
+    if (!formData.email) {
+      toast.error("Email is required");
+      return;
+    }
+    if (!formData.phoneNumber) {
+      toast.error("Mobile Number is required");
+      return;
+    }
+    if (!formData.message) {
+      toast.error("Message is required");
+      return;
+    }
+
+    const formDataToSend = new FormData(event.target);
+    formDataToSend.append("access_key", "1b8aba8a-8bba-4b4c-ae06-11c72e287a89");
+
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success("Thank you for inquiring us");
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+    }
+  };
 
   const capitalizeWords = (str) => {
     if (!str) return "";
@@ -294,24 +347,36 @@ const JobDetailsPage = () => {
                 </div>
                 <div className="bg-gray-100 p-4 rounded-lg">
                   <h3 className="text-xl font-bold mb-4">Contact Us</h3>
-                  <form>
+                  <form onSubmit={submitHandler}>
                     <input
+                      name="fullName"
                       type="text"
                       placeholder="Full name"
+                      value={formData.fullName}
+                      onChange={inputChangeHandler}
                       className="w-full mb-2 p-2 border rounded-md"
                     />
                     <input
+                      name="email"
                       type="email"
                       placeholder="Email Address"
+                      value={formData.email}
+                      onChange={inputChangeHandler}
                       className="w-full mb-2 p-2 border rounded-md"
                     />
                     <input
                       type="text"
+                      name="phoneNumber"
                       placeholder="Phone Number"
+                      value={formData.phoneNumber}
+                      onChange={inputChangeHandler}
                       className="w-full mb-2 p-2 border rounded-md"
                     />
                     <textarea
+                      name="message"
                       placeholder="Your Message"
+                      value={formData.message}
+                      onChange={inputChangeHandler}
                       className="w-full mb-2 p-2 border rounded-md"
                     ></textarea>
                     <button

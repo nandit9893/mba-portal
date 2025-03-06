@@ -5,6 +5,7 @@ import { BiShoppingBag } from "react-icons/bi";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const HeroSection = () => {
   const router = useRouter();

@@ -123,7 +123,7 @@ const AdminEmployerPage = () => {
     <div className="sm:px-5 sm:py-2 flex-col min-h-screen w-full">
       <div className="flex justify-between w-full gap-5 min-h-screen">
         <div
-          className={`flex flex-col gap-5 rounded-2xl bg-gradient-to-tr from-slate-950 to-teal-500 ${
+          className={`flex flex-col gap-5 rounded-2xl bg-[#211C84] ${
             isCollapsed ? "w-[70px]" : "w-1/5"
           } min-h-screen transition-all duration-300 ease-in-out`}
         >
@@ -154,9 +154,9 @@ const AdminEmployerPage = () => {
                   key={item._id}
                   className={`flex items-center gap-5 ${
                     activeMenu === item.title
-                      ? "bg-gradient-to-br from-teal-300 to-black"
+                      ? "bg-[#003092]"
                       : null
-                  } cursor-pointer hover:bg-gradient-to-br from-teal-800 to-teal-500 py-2 px-5 rounded-2xl`}
+                  } cursor-pointer hover:bg-[#4635B1] py-2 px-5 rounded-2xl`}
                 >
                   <span className="text-lg font-semibold text-white">
                     {item.icon}
@@ -171,7 +171,7 @@ const AdminEmployerPage = () => {
             </div>
             <div
               onClick={() => setShowMenu((prev) => !prev)}
-              className="flex items-center gap-5 cursor-pointer hover:bg-gradient-to-br from-teal-800 to-teal-500 py-2 px-5 rounded-2xl"
+              className="flex items-center gap-5 cursor-pointer hover:bg-[#4635B1] py-2 px-5 rounded-2xl"
             >
               <span className="text-lg font-semibold text-white">
                 <HiOutlineQuestionMarkCircle />
@@ -190,7 +190,11 @@ const AdminEmployerPage = () => {
                     <div
                       onClick={() => handleActivity(item.title)}
                       key={item._id}
-                      className="flex items-center gap-5 cursor-pointer hover:bg-gradient-to-br from-teal-800 to-teal-500 py-2 px-5 rounded-2xl"
+                      className={`flex items-center gap-5 ${
+                        activeMenu === item.title
+                          ? "bg-[#003092]"
+                          : null
+                      } cursor-pointer hover:bg-[#4635B1] py-2 px-5 rounded-2xl`}
                     >
                       <span className="text-lg font-semibold text-white">
                         {item.icon}

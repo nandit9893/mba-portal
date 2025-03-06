@@ -5,8 +5,8 @@ const AdminSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    position: { type: String, required: false }, // New field for position
-    salary: { type: Number, required: false },   // New field for salary
+    position: { type: String, required: true }, // New field for position
+    salary: { type: Number, required: true },   // New field for salary
     name: { type: String, required: true },      // New field for name
     mobile_number: { type: String, required: true }  // New field for mobile number
 });

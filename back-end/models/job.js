@@ -10,12 +10,13 @@ const jobSchema = new mongoose.Schema({
     jobTitle: { type: String, required: true },
     jobPackage: { type: Number, required: false },
     company: { type: String, required: true },
-    companyLogo: { type: String, required: false }, // New Field: Logo URL
-    keyResponsibilities: { type: [String], required: false }, // New Field: Responsibilities List
-   
+    companyLogo: { type: String, required: false }, 
+    keyResponsibilities: { type: [String], required: false }, 
     createdAt: { type: Date, default: Date.now },
+
+    // ✅ Add `createdBy` to track which admin posted the job
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: true }
 });
 
-// Export the model
 const Job = mongoose.model("Job", jobSchema);
 export default Job;

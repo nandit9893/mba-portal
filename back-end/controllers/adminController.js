@@ -135,6 +135,7 @@ export const getAdminList = async (req, res, next) => {
   }
 };
 
+<<<<<<< HEAD
 export const adminSignInSignUp = async (req, res) => {
   const { name, email } = req.body;
     try {
@@ -173,3 +174,6 @@ export const adminSignInSignUp = async (req, res) => {
       });
     }
 }
+=======
+
+>>>>>>> 978a794 (blog controller)

@@ -4,6 +4,38 @@ import Job from "../models/job.js";
 import fs from "fs";
 import multer from "multer";
 
+
+export const listApplicationsByAdmin = async (req, res) => {
+    try {
+        if (!req.admin) {
+            return res.status(401).json({ success: false, message: "Not authorized" });
+        }
+
+        // Find all jobs posted by this admin
+        const adminJobs = await Job.find({ createdBy: req.admin._id }).select("_id");
+
+        if (!adminJobs.length) {
+            return res.status(404).json({ success: false, message: "No jobs found for this admin" });
+        }
+
+        const jobIds = adminJobs.map(job => job._id);
+
+        // Fetch applications for jobs posted by this admin
+        const applications = await Application.find({ job: { $in: jobIds } })
+            .populate("candidate", "name email")
+            .populate("job", "title company");
+
+        res.status(200).json({
+            success: true,
+            applications,
+        });
+
+    } catch (error) {
+        console.error("❌ Error fetching applications:", error.message);
+        res.status(500).json({ success: false, message: "Failed to fetch applications", error: error.message });
+    }
+};
+
 // 🟢 Apply for a Job (Protected Route)
 // Set up resume upload directory
 const resumeUploadPath = path.join("public", "uploads", "resumes");
@@ -187,3 +219,7 @@ export const listApplicationsByUserId = async (req, res) => {
       .json({ success: false, message: "Server error", error: error.message });
   }
 };
+
+
+
+

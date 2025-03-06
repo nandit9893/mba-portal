@@ -211,28 +211,42 @@ export const listJobById = async (req, res, next) => {
 
 export const deleteJobById = async (req, res, next) => {
     try {
-        const { jobId } = req.params; // Extract job ID from URL params
+        const { jobId } = req.params;
 
-        // Find and delete the job
-        const deletedJob = await Job.findByIdAndDelete(jobId);
-
-        // Check if job exists
-        if (!deletedJob) {
-            return res.status(404).json({
-                success: false,
-                message: "Job not found"
-            });
+        // ✅ Ensure admin is authenticated
+        if (!req.admin) {
+            return res.status(401).json({ success: false, message: "Not authorized" });
         }
 
-        res.status(200).json({
-            success: true,
-            message: "Job deleted successfully",
-            job: deletedJob
-        });
+        console.log(`Admin ${req.admin._id} is attempting to delete Job ID: ${jobId}`); // ✅ Debug log
+
+        // ✅ Find the job by ID
+        const job = await Job.findById(jobId);
+
+        if (!job) {
+            console.log(`Job ID ${jobId} not found`); // ✅ Debug log
+            return res.status(404).json({ success: false, message: "Job not found" });
+        }
+
+        // ✅ Ensure the job was created by the same admin
+        if (job.createdBy.toString() !== req.admin._id.toString()) {
+            console.log(`Admin ${req.admin._id} is not authorized to delete Job ID ${jobId}`); // ✅ Debug log
+            return res.status(403).json({ success: false, message: "Unauthorized to delete this job" });
+        }
+
+        // ✅ Delete the job
+        await Job.findByIdAndDelete(jobId);
+        console.log(`Job ID ${jobId} deleted successfully by Admin ${req.admin._id}`); // ✅ Debug log
+
+        res.status(200).json({ success: true, message: "Job deleted successfully" });
+
     } catch (error) {
-        next(error);
+        console.error("Error deleting job:", error.message);
+        res.status(500).json({ success: false, message: error.message || "Failed to delete job" });
     }
 };
+
+
 export const searchJobs = async (req, res, next) => {
     try {
         const { jobTitle, location, experience, jobPackage, category, jobType } = req.query;
@@ -345,14 +359,19 @@ export const listMyJobs = async (req, res) => {
             return res.status(401).json({ success: false, message: "Not authorized" });
         }
 
-        // Fetch jobs uploaded by the authenticated admin
+        console.log("Fetching jobs for Admin ID:", req.admin._id); // ✅ Debug log
+
+        // ✅ Fetch jobs uploaded by the authenticated admin
         const jobs = await Job.find({ createdBy: req.admin._id });
+
+        console.log("Jobs Found:", jobs.length); // ✅ Debug log
 
         res.status(200).json({
             success: true,
             jobs,
         });
     } catch (error) {
+        console.error("Error fetching jobs:", error.message);
         res.status(500).json({ success: false, message: error.message || "Failed to fetch jobs" });
     }
 };

@@ -113,29 +113,30 @@ export const listAllApplications = async (req, res) => {
 
 export const listApplicationsByUserId = async (req, res) => {
     try {
-        const { userId } = req.params; // Extract user ID from request parameters
+        console.log("User in Request:", req.user); // ✅ Debugging step
 
-        // Find applications by candidate ID
-        const applications = await Application.find({ candidate: userId })
-            .populate({
-                path: "candidate",
-                select: "name email -password" // Exclude password for security
-            })
-            .populate("job", "title company"); // Populate job details
-
-        // Check if applications exist
-        if (!applications || applications.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "No applications found for this user"
-            });
+        const userId = req.user.userId; // FIX: Access `userId` from token instead of `_id`
+        
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "User ID not found in token" });
         }
 
-        res.status(200).json({
-            success: true,
-            applications
-        });
+        const applications = await Application.find({ candidate: userId })
+            .populate("candidate", "name email")
+            .populate("job", "title company");
+
+        if (!applications || applications.length === 0) {
+            return res.status(404).json({ success: false, message: "No applications found for this user" });
+        }
+
+        res.status(200).json({ success: true, applications });
     } catch (error) {
+        console.error("Error fetching applications:", error);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
+<<<<<<< HEAD
 };
+=======
+};
+
+>>>>>>> 044491d212a181c46638902fa982346c15bc9d54

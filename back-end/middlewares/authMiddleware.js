@@ -71,17 +71,27 @@ export const protectUser = async (req, res, next) => {
 };
 
 export const authenticateUser = async (req, res, next) => {
-    const token = req.header('Authorization');
-    if (!token) return res.status(401).json({ message: 'Access Denied' });
+    const token = req.header("Authorization")?.split(" ")[1]; // Extract token
+
+    if (!token) return res.status(401).json({ message: "Access Denied, No Token Provided" });
 
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = verified;
+        console.log("Decoded Token:", verified); // ✅ Debugging step
+
+        req.user = { userId: verified.userId }; // ✅ Ensure `userId` is stored correctly
+
+        if (!req.user.userId) {
+            return res.status(400).json({ success: false, message: "User ID not found in token" });
+        }
+
         next();
     } catch (err) {
-        res.status(400).json({ message: 'Invalid Token' });
+        res.status(400).json({ message: "Invalid Token" });
     }
 };
+
+
 
 export const authMiddleware = async (req, res, next) => {
     const token = req.header('x-auth-token');

@@ -8,5 +8,7 @@ const router = express.Router();
 
 router.post("/applyForJob", authenticateUser, applyForJob);
 router.get("/listAllApplications", listAllApplications);
-router.get("/listApplicationsByUserId/:userId", listApplicationsByUserId);
+// router.get("/listApplicationsByUserId", authenticateUser, listApplicationsByUserId);
+router.get("/listApplicationsByUserId", authenticateUser, listApplicationsByUserId);
+
 export default router;

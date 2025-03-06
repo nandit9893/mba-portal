@@ -109,3 +109,33 @@ export const listAllApplications = async (req, res) => {
       res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
+
+
+export const listApplicationsByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params; // Extract user ID from request parameters
+
+        // Find applications by candidate ID
+        const applications = await Application.find({ candidate: userId })
+            .populate({
+                path: "candidate",
+                select: "name email -password" // Exclude password for security
+            })
+            .populate("job", "title company"); // Populate job details
+
+        // Check if applications exist
+        if (!applications || applications.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No applications found for this user"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            applications
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+};

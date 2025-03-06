@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaBell, FaUser, FaSearch, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import "../globals.css";
+import axios from "axios";
 
 const AdminMainContent = ({ isCollapsed }) => {
   const employeesData = [
@@ -176,6 +177,21 @@ const AdminMainContent = ({ isCollapsed }) => {
 
   const [prevIndex, setPrevIndex] = useState(0);
   const [nextIndex, setNextIndex] = useState(10);
+
+  useEffect(() => {
+    const fetchLocationsJobsCompanyLocations = async () => {
+      const url =` ${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/applications/listAllApplications`;
+      try {
+        const response = await axios.get(url);
+        if (response.data.success) {
+          console.log(response.data.applications)
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchLocationsJobsCompanyLocations();
+  }, []);
 
   const previousData = () => {
 

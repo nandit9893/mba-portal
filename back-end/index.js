@@ -26,6 +26,7 @@ import profileRoutes from "./routes/profileRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";// ✅ Fixed import
+import hrrouter from "./routes/hrRoutes.js";
 
 // Load environment variables early
 
@@ -61,6 +62,8 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api", profileRoutes);
 app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/settings", settingsRoutes);
+
+app.use("/api/hr", hrrouter);
 
 app.get("/", (req, res) => {
     res.send("MBA job portal admin backend is running.");

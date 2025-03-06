@@ -59,7 +59,7 @@ const Navbar = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      if (response.status === 200) {
+      if (response.data.success) {
         localStorage.removeItem("authToken");
         toast.success(response.data.message || "Logged out successfully");
         router.push("/Login");
@@ -76,7 +76,9 @@ const Navbar = () => {
         <BiShoppingBag className="text-white text-3xl" />
         <h3 className="text-white text-2xl font-semibold">Job Portal</h3>
       </a>
-      <HiOutlineMenu className="block sm:hidden text-3xl text-white cursor-pointer" onClick={()=>setOpenMenus((prev) => !prev)} />
+      {
+        tokenFromLocalStorage === false ? <HiOutlineMenu className="block sm:hidden text-3xl text-white cursor-pointer" onClick={()=>setOpenMenus((prev) => !prev)} />  : null
+      }
       <div className="hidden sm:flex gap-5 items-center">
         <Link href="/" className={`${menu === "home" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("home")}>Home</Link>
         <Link href="/Jobs" className={`${menu === "job" ? "text-white" : "text-gray-500"} hover:text-gray-300 text-[15px] font-semibold cursor-pointer transition-colors duration-300`} onClick={() => setMenu("job")}>Jobs</Link>

@@ -14,6 +14,7 @@ const JobDetailsPage = () => {
   const { _id } = useParams();
   const [specificJob, setSpecificJob] = useState(null);
   const [relatedJobs, setRelatedJobs] = useState(null);
+  const [resume, setResume] = useState(null);
 
   const navigateToJobDetails = (id) => {
     router.push(`/JobDetails/${id}`);
@@ -63,31 +64,50 @@ const JobDetailsPage = () => {
     }
   };
 
-  const applyThisJob = async () => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-    if (!token) {
-        toast.error("You are not logged in!");
-        router.push("/Login");
-        return;
+  const inputImageHandler = (event) => {
+    const file = event.target.files[0];
+    if (!file) {
+      toast.error("No file selected.");
+      return;
     }
+    if (file.type !== "application/pdf") {
+      toast.error("Please upload a PDF file.");
+      return;
+    }
+    setResume(file);
+    toast.success("PDF uploaded successfully.");
+  };
+
+  const applyThisJob = async () => {
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+    if (!token) {
+      toast.error("You are not logged in!");
+      router.push("/Login");
+      return;
+    }
+    if (!resume) {
+      toast.error("Please upload a resume.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("jobId", specificJob._id);
+    formData.append("resume", resume);
     const newURL = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/applications/applyForJob`;
     try {
-      const response = await axios.post(
-        newURL,
-        { jobId: specificJob._id }, // Send only jobId
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        }
-      );
+      const response = await axios.post(newURL, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       if (response.data.success) {
-          toast.success(response.data.message || "Job Applied Successfully");
+        toast.success(response.data.message || "Job Applied Successfully");
       }
-      } catch (error) {
-       toast.error(error.response?.data?.message || "Server error");
-      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Server error");
+    }
   };
 
   return (
@@ -181,7 +201,7 @@ const JobDetailsPage = () => {
                     {capitalizeWords(specificJob?.experience)}
                   </span>
                 </div>
-                <div className="flex flex-col items-center mb-6">
+                <div className="flex flex-col gap-10 items-center mb-6">
                   <span className="mr-2 text-xl font-semibold mb-5">
                     Job Information
                   </span>
@@ -221,6 +241,15 @@ const JobDetailsPage = () => {
                       )}
                     </div>
                   </div>
+                  <input
+                    className="p-2 w-full border border-green-700 rounded"
+                    type="file"
+                    id="resume"
+                    name="resume"
+                    accept="application/pdf" // Only allow PDFs
+                    onChange={inputImageHandler}
+                    required
+                  />
                 </div>
               </div>
               <div className="lg:w-1/3 lg:pl-6">

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { FaSortUp, FaSortDown, FaEllipsisH, FaSearch } from "react-icons/fa";
 
 const jobData = [
@@ -78,6 +79,24 @@ export default function JobApplications() {
     setIsAscending(sortedBy === key ? !isAscending : true);
     setSortedBy(key);
   };
+
+  useEffect(() => {
+    const fetchLocationsJobsCompanyLocations = async () => {
+      const token = localStorage.getItem("authToken");
+      const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/applications/listAllApplications`;
+      try {
+        const response = await axios.get(url, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (response.data.success) {console.log(response.data)
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchLocationsJobsCompanyLocations();
+  }, []);
 
   return (
     <div className="p-4 max-w-6xl mx-auto">

@@ -93,19 +93,24 @@ console.log(job)
 
 
 export const listAllApplications = async (req, res) => {
-  try {
-      const applications = await Application.find()
-          .populate({
-              path: "candidate",
-              select: "name email -password" // Explicitly exclude the password
-          })
-          .populate("job", "title company"); // Populate job details
-
-      res.status(200).json({
-          success: true,
-          applications
-      });
-  } catch (error) {
-      res.status(500).json({ success: false, message: "Server error", error: error.message });
-  }
-};
+    try {
+        // Get logged-in user's ID from the request (assuming it's set via authentication middleware)
+        const userId = req.user._id; 
+  
+        // Fetch applications only for the logged-in user
+        const applications = await Application.find({ candidate: userId })
+            .populate({
+                path: "candidate",
+                select: "name email -password" // Exclude password
+            })
+            .populate("job", "title company"); // Populate job details
+  
+        res.status(200).json({
+            success: true,
+            applications
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+  };
+  

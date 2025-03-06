@@ -7,6 +7,6 @@ import { authenticateUser } from "../middlewares/applicationMiddleware.js";
 const router = express.Router();
 
 router.post("/applyForJob", authenticateUser, applyForJob);
-router.get("/listAllApplications", listAllApplications);
+router.get("/listAllApplications", authenticateUser, listAllApplications);
 
 export default router;

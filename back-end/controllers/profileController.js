@@ -2,7 +2,8 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import { fileURLToPath } from "url";
-
+import userModel from "../models/userModel.js";
+import Profile from "../models/profileModel.js";
 // ✅ Corrected __filename and __dirname
 const _filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(_filename);
@@ -36,27 +37,69 @@ export const createProfile = async (req, res) => {
             return res.status(400).json({ message: "Profile picture is required!" });
         }
 
-        const { firstName, lastName, email, phoneNumber, gender, dob, highestDegree, university, passingYear, skills, experience } = req.body;
+        // ✅ Extract user from token (Assumes `authenticate.js` middleware adds `req.user`)
+        if (!req.user || !req.user.email) {
+            return res.status(401).json({ message: "Unauthorized: No valid token provided" });
+        }
 
-        // ✅ Simulate Saving to Database (Replace with actual DB logic)
-        const profileData = {
+        const { firstName, lastName, phoneNumber, gender, dob, highestDegree, university, passingYear, skills, experience } = req.body;
+        const email = req.user.email; // ✅ Use email from token
+
+        // ✅ Check if a profile already exists for this user
+        const existingProfile = await Profile.findOne({ email });
+        if (existingProfile) {
+            return res.status(400).json({ message: "Profile already exists!" });
+        }
+
+        // ✅ Create a new Profile document
+        const newProfile = new Profile({
             firstName,
             lastName,
-            email,
-            phoneNumber,
+            email, // ✅ Ensure the email comes from the token
+            phone: phoneNumber,
             gender,
             dob,
-            highestDegree,
-            university,
-            passingYear,
-            skills: skills ? skills.split(",") : [], // Convert skills to array
-            experience,
-            profilePicture: `/uploads/${req.file.filename}`, // Save relative file path
-        };
+            profilePicture: `/uploads/${req.file.filename}`, // ✅ Store image path
+            education: {
+                highestDegree,
+                university,
+                passingYear,
+                skills: skills ? skills.split(",") : [], // Convert to array
+                experience
+            }
+        });
 
-        res.status(201).json({ message: "Profile created successfully!", profile: profileData });
+        // ✅ Save to MongoDB
+        await newProfile.save();
+
+        res.status(201).json({ message: "Profile created successfully!", profile: newProfile });
     } catch (error) {
         console.error("Error creating profile:", error);
         res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
+
+
+export const getProfile = async (req, res) => {
+    try {
+        console.log("Received User:", req.user); // Debug log
+
+        if (!req.user || !req.user.email) {
+            return res.status(400).json({ success: false, message: "User email not found in request" });
+        }
+
+        // ✅ Fetch Profile from `Profile` model using the email from the token
+        const profile = await Profile.findOne({ email: req.user.email });
+
+        if (!profile) {
+            return res.status(404).json({ success: false, message: "Profile not found" });
+        }
+
+        res.status(200).json({ success: true, profile });
+    } catch (error) {
+        console.error("Error fetching profile:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
     }
 };

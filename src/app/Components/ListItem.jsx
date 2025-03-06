@@ -199,13 +199,13 @@ export default function JobApplications() {
 
       {/* Mobile Card View */}
       <div className="md:hidden">
-        {jobData.map((job, index) => (
+        {applicationData && applicationData?.map((job, index) => (
           <div key={index} className="bg-white border rounded-lg shadow-md p-4 mb-3">
             <div className="flex justify-between">
-              <h3 className="font-semibold text-lg">{job.jobApplied}</h3>
+              <h3 className="font-semibold text-lg">{capitalizeWords(job.job.jobTitle)}</h3>
               <FaEllipsisH className="text-gray-500 cursor-pointer hover:text-gray-700" />
             </div>
-            <p className="text-sm text-gray-600">{job.companyName || "N/A"}</p>
+            <p className="text-sm text-gray-600">{capitalizeWords(job.job.company)}</p>
             <p className={`text-sm font-semibold ${
               job.status === "Under Review"
                 ? "text-blue-600"
@@ -216,8 +216,7 @@ export default function JobApplications() {
               {job.status}
             </p>
             <div className="flex justify-between text-xs text-gray-500 mt-2">
-              <p>Job ID: {job.jobId}</p>
-              <p>Applied On: {job.applyOn}</p>
+              <p>Applied On: {timeAgo(job.createdAt)}</p>
             </div>
           </div>
         ))}

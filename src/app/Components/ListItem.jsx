@@ -70,6 +70,12 @@ const jobData = [
       },
 ];
 
+
+const capitalizeWords = (str) => {
+  if (!str) return "";
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 export default function JobApplications() {
   const [search, setSearch] = useState("");
   const [sortedBy, setSortedBy] = useState(null);
@@ -84,21 +90,48 @@ export default function JobApplications() {
   useEffect(() => {
     const fetchLocationsJobsCompanyLocations = async () => {
       const token = localStorage.getItem("authToken");
-      const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/applications/listAllApplications`;
+      if (!token) {
+        return;
+      }
+      const url = `http://localhost:5000/api/applications/listApplicationsByUserId`;
       try {
         const response = await axios.get(url, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        
-        if (response.data.success) {console.log(response.data.applications)
-          setApplicationData(response.data.applications)
+  
+        if (response.data.success) {
+          if (response.data.applications.length > 0) {
+            setApplicationData(response.data.applications);
+          } else {
+            setApplicationData(null); 
+          }
+        } else {
+          console.log("API returned success: false");
         }
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching applications:", error.response?.data || error.message);
       }
     };
+  
     fetchLocationsJobsCompanyLocations();
   }, []);
+
+  const timeAgo = (timestamp) => {
+    const now = new Date();
+    const postedDate = new Date(timestamp);
+    const diffInSeconds = Math.floor((now - postedDate) / 1000);
+    if (diffInSeconds < 60) {
+      return `${diffInSeconds} sec ago`;
+    } else if (diffInSeconds < 3600) {
+      return `${Math.floor(diffInSeconds / 60)} min ago`;
+    } else if (diffInSeconds < 86400) {
+      return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    } else {
+      return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    }
+  };
+  
+  
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
@@ -122,7 +155,7 @@ export default function JobApplications() {
         <table className="w-full bg-white border rounded-lg shadow-lg">
           <thead className="bg-gray-100 text-sm text-gray-600">
             <tr>
-              {["Job Applied", "Company Name", "Status", "Job ID", "Apply On", "Options"].map((heading, index) => (
+              {["Job Applied", "Company Name", "Status", "Apply On", "Options"].map((heading, index) => (
                 <th key={index} className="px-4 py-3 text-left whitespace-nowrap">
                   <button
                     onClick={() => sortData(heading.toLowerCase().replace(/ /g, ""))}
@@ -138,23 +171,23 @@ export default function JobApplications() {
             </tr>
           </thead>
           <tbody className="text-sm">
-            {jobData.map((job, index) => (
+            {applicationData && applicationData?.map((job, index) => (
               <tr key={index} className="border-t">
                 <td className="px-4 py-3 flex items-center gap-2 whitespace-nowrap">
-                  <input type="radio" className="accent-gray-600" /> {job.jobApplied}
+                  <input type="radio" className="accent-gray-600" /> {capitalizeWords(job.job.jobTitle)}
                 </td>
-                <td className="px-4 py-3 whitespace-nowrap">{job.companyName || "N/A"}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{capitalizeWords(job.job.company)}</td>
                 <td className={`px-4 py-3 whitespace-nowrap font-semibold ${
-                  job.status === "Under Review"
+                  job.status === "pending"
                     ? "text-blue-600"
                     : job.status === "Rejected"
                     ? "text-red-500"
                     : "text-green-600"
                 }`}>
-                  {job.status}
+                  {capitalizeWords(job.status)}
                 </td>
-                <td className="px-4 py-3 text-center whitespace-nowrap">{job.jobId}</td>
-                <td className="px-4 py-3 whitespace-nowrap">{job.applyOn}</td>
+                {/* <td className="px-4 py-3 text-center whitespace-nowrap">{job._id}</td> */}
+                <td className="px-4 py-3 whitespace-nowrap">{timeAgo(job.createdAt)}</td>
                 <td className="px-4 py-3 text-center">
                   <FaEllipsisH className="text-gray-600 cursor-pointer hover:text-gray-800" />
                 </td>

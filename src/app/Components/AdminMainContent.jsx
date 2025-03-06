@@ -217,26 +217,30 @@ const AdminMainContent = ({ isCollapsed }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center gap-5 place-items-center">
         <div className="flex flex-col rounded-xl p-3 items-center justify-center border-2 border-gray-300 bg-white w-44 shadow-2xl">
           <p className="text-2xl font-semibold text-black">Views</p>
-          <div className="flex gap-2 w-full">
+          <div className="flex gap-2 w-full justify-between items-center">
             <p className="text-xl font-semibold">2,314</p>
+            <FaArrowRight className="transform -rotate-45 text-2xl text-green-600" />
           </div>
         </div>
         <div className="flex flex-col rounded-xl p-3 items-center justify-center border-2 border-gray-300 bg-white w-44 shadow-2xl">
           <p className="text-2xl font-semibold text-black">Visits</p>
-          <div className="flex gap-2 w-full">
-            <p className="text-xl font-semibold">2,314</p>
+          <div className="flex gap-2 w-full justify-between items-center">
+            <p className="text-xl font-semibold">2,45</p>
+            <FaArrowRight className="transform -rotate-45 text-2xl text-red-700" />
           </div>
         </div>
         <div className="flex flex-col rounded-xl p-3 items-center justify-center border-2 border-gray-300 bg-white w-44 shadow-2xl">
           <p className="text-2xl font-semibold text-black">New Users</p>
-          <div className="flex gap-2 w-full">
-            <p className="text-xl font-semibold">2,314</p>
+          <div className="flex gap-2 w-full justify-between items-center">
+            <p className="text-xl font-semibold">2,158</p>
+            <FaArrowRight className="transform -rotate-45 text-2xl text-green-600" />
           </div>
         </div>
         <div className="flex flex-col rounded-xl p-3 items-center justify-center border-2 border-gray-300 bg-white w-44 shadow-2xl">
           <p className="text-2xl font-semibold text-black">Active Users</p>
-          <div className="flex gap-2 w-full">
-            <p className="text-xl font-semibold">2,314</p>
+          <div className="flex gap-2 w-full justify-between items-center">
+            <p className="text-xl font-semibold">1088</p>
+            <FaArrowRight className="transform rotate-45 text-2xl text-red-700" />
           </div>
         </div>
       </div>

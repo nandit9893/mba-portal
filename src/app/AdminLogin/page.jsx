@@ -45,6 +45,10 @@ const AdminLoginPage = () => {
     }
   };
 
+  const loginWithGoogle = () => {
+
+  }
+
   return (
     <div className="bg-[#0F0F0F] sm:px-20 sm:py-10 p-5">
       <div className="flex flex-col sm:flex-row sm:gap-0 gap-5 justify-between w-full min-h-screen relative">
@@ -70,9 +74,7 @@ const AdminLoginPage = () => {
             <div className="w-full h-[1px] bg-gray-400"></div>
           </div>
           <div className="flex justify-center items-center gap-5">
-            <Image src="/google_icon.jpeg" width={50} height={50} alt="Picture of the author" className="w-10 h-10 rounded-full bg-[#0F0F0F]"/>
-            <Image src="/facebook_icon.png" width={50} height={50} alt="Picture of the author" className="w-10 h-10 rounded-full bg-[#0F0F0F]"/>
-            <Image src="/github_icon.png" width={50} height={50} alt="Picture of the author" className="w-10 h-10 rounded-full bg-[#0F0F0F]"/>
+            <Image onClick={loginWithGoogle} src="/google_icon.jpeg" width={50} height={50} alt="Picture of the author" className="w-10 h-10 rounded-full bg-[#0F0F0F] cursor-pointer"/>
           </div>
           <Link href="/AdminSignUp" className="text-white text-center text-[14px]">Don’t have an account ? Signup</Link>
           <div className="flex gap-10 items-center justify-center">

@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation"; 
 import axios from "axios";
 import toast from "react-hot-toast";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import app from "../firebase.js";
 
 const AdminRegisterPage = () => {
   const [userSignUp, setUserSignUp] = useState({

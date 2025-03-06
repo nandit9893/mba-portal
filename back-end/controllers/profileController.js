@@ -83,8 +83,6 @@ export const createProfile = async (req, res) => {
 // ✅ Get Profile Controller
 export const getProfile = async (req, res) => {
     try {
-        console.log("Received User:", req.user); // Debug log
-
         if (!req.user || !req.user.email) {
             return res.status(400).json({ success: false, message: "User email not found in request" });
         }

@@ -55,7 +55,6 @@ const JobCard = ({ job }) => {
 };
 
 const JobList = ({ jobs, setJobs }) => {
-	console.log("jobs in job list", jobs);
 
 	return (
 		<div className="p-4 sm:p-6 w-full">

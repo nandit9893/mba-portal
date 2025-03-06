@@ -67,8 +67,6 @@ const JobFilterSidebar = ({ jobs, setFilteredJobs }) => {
 		salary,
 	};
 
-	console.log("filters applied", filtersApplied);
-
 	const filterJobs = () => {
 		let filtered = jobs.filter((job) => {
 			// console.log("job category", selectedCategories);

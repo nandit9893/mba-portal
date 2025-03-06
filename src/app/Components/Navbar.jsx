@@ -20,6 +20,7 @@ const Navbar = () => {
   const [tokenFromLocalStorage, setTokenFromLocalStorage] = useState(false);
   const pathname = usePathname();
   const [_id, setID] = useState(null);
+  const [profileData, setProfileData] = useState(null);
 
   const fetchToken = () => {
     const token = localStorage.getItem("authToken");
@@ -46,6 +47,30 @@ const Navbar = () => {
   
     fetchJobDetails();
   }, []);
+
+  const fetchUserProfile = async () => {
+    const token = localStorage.getItem("authToken");
+    const url = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/getProfile`;
+    try {
+      const response = await axios.get(url, { 
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data.success) {
+        setProfileData(response.data.profile);
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+  
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if(token) {
+      fetchUserProfile();
+    } else {
+      return;
+    };
+  }, []);
   
 
   const logOutUser = async () => {
@@ -62,9 +87,7 @@ const Navbar = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success(response.data.message || "Logged out successfully");
-      setTimeout(() => {
-        router.replace("/");
-      }, 100);
+      router.replace("/");
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Logout failed!";
       toast.error(errorMessage);
@@ -109,9 +132,9 @@ const Navbar = () => {
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 100 }}
                   className="flex flex-col gap-4 px-2 py-3 bg-gradient-to-tr from-slate-950 to-slate-600 rounded-2xl z-50 absolute right-4 w-56 top-16">
-                  <Link onClick={()=>setViewProfile(false)} href="/Profile" onMouseEnter={() => setSlide(1)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 1 ? "translate-x-1" : ""}`}>nanditsharma063@gmail.com</Link>
+                  <Link onClick={()=>setViewProfile(false)} href="/Profile" onMouseEnter={() => setSlide(1)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 1 ? "translate-x-1" : ""}`}>{profileData?.email}</Link>
                   <Link onClick={()=>setViewProfile(false)} href="/MyApplication" onMouseEnter={() => setSlide(2)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 2 ? "translate-x-1" : ""}`}>MY APPLICATION</Link>
-                  <Link onClick={()=>setViewProfile(false)} href="/Resume" onMouseEnter={() => setSlide(3)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 3 ? "translate-x-1" : ""}`}>EDIT RESUME</Link>
+                  <Link onClick={()=>setViewProfile(false)} href="/Resume" onMouseEnter={() => setSlide(3)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 3 ? "translate-x-1" : ""}`}>RESUME</Link>
                   <Link onClick={()=>setViewProfile(false)} href="/Payment" onMouseEnter={() => setSlide(4)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 4 ? "translate-x-1" : ""}`}>PAYMENT</Link>
                   <Link onClick={()=>setViewProfile(false)} href="/HelpSupport" onMouseEnter={() => setSlide(5)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 5 ? "translate-x-1" : ""}`}>HELP CENTER</Link>
                   <p onClick={logOutUser} onMouseEnter={() => setSlide(6)} onMouseLeave={() => setSlide(null)} className={`text-white text-center text-[14px] cursor-pointer font-semibold transition-transform duration-300 ease-in-out ${slide === 6 ? "translate-x-1" : ""}`}>LOGOUT</p>

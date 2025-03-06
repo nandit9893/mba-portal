@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation"; 
 import axios from "axios";
 import toast from "react-hot-toast";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import app from "../firebase.js";
 
 const LoginPage = () => {
   const [userLoginIn, setUserLoginIn] = useState({
@@ -46,7 +48,31 @@ const LoginPage = () => {
       toast.error(errorMessage);
     }
   };
-  
+
+  const loginWithGoogle = async () => {
+    try {
+      const newURL = `${process.env.NEXT_PUBLIC_STRAPI_SERVER_BASE_URL}/api/v1/auth/sign/with/google`;
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth(app);
+      const result = await signInWithPopup(auth, provider);
+      const { displayName, email } = result.user;
+      const response = await axios.post(newURL, {
+        name: displayName,
+        email,
+      });
+      if (response.data.success) {
+        const token = response.data.token;
+        localStorage.setItem("authToken", token);
+        toast.success("Login successful!");
+        router.push("/");
+      } else {
+        toast.error("Login failed!");
+      }
+    } catch (error) {
+      toast.error("An error occurred while signing in.");
+    }
+  };
+
   return (
     <div className="bg-[#0F0F0F] sm:px-20 sm:py-10 p-5">
       <div className="flex flex-col sm:flex-row sm:gap-0 gap-5 justify-between w-full min-h-screen relative">
@@ -97,9 +123,7 @@ const LoginPage = () => {
             <div className="w-full h-[1px] bg-gray-400"></div>
           </div>
           <div className="flex justify-center items-center gap-5">
-            <Image src="/google_icon.jpeg" width={50} height={50} alt="Picture of the author" className="w-10 h-10 rounded-full bg-[#0F0F0F]"/>
-            <Image src="/facebook_icon.png" width={50} height={50} alt="Picture of the author" className="w-10 h-10 rounded-full bg-[#0F0F0F]"/>
-            <Image src="/github_icon.png" width={50} height={50} alt="Picture of the author" className="w-10 h-10 rounded-full bg-[#0F0F0F]"/>
+            <Image onClick={loginWithGoogle} src="/google_icon.jpeg" width={50} height={50} alt="Picture of the author" className="w-10 h-10 rounded-full bg-[#0F0F0F] cursor-pointer"/>
           </div>
           <Link href="/Register" className="text-white text-center text-[14px]">Don’t have an account ? Signup</Link>
           <div className="flex gap-10 items-center justify-center">

@@ -134,3 +134,42 @@ export const getAdminList = async (req, res, next) => {
       next(error);
   }
 };
+
+export const adminSignInSignUp = async (req, res) => {
+  const { name, email } = req.body;
+    try {
+      const existedUser = await Admin.findOne({ email });
+  
+      if (existedUser) {
+        const token = existedUser.createJWT();
+        return res.status(200).json({
+          success: true,
+          message: "Login Successfully",
+          user: existedUser,
+          token,
+        });
+      }
+      const generatedPassword = Math.random().toString(36).slice(-8);
+  
+      const newUser = await Admin.create({
+        password: generatedPassword, 
+        name,
+        email,
+      });
+      const token = newUser.createJWT();
+  
+      return res.status(201).json({
+        success: true,
+        message: "Admin Created Successfully",
+        user: newUser,
+        token,
+        password: generatedPassword,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "An error occurred while registering the Admin",
+        error: error.message,
+      });
+    }
+}

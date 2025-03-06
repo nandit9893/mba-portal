@@ -17,7 +17,6 @@ const JobsPage = () => {
 				);
 
 				setJobs(response.data.jobs);
-				console.log(response.data.jobs);
 			} catch (error) {
 				console.error("Error fetching data", error);
 			}
